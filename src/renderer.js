@@ -1,12 +1,22 @@
-/****************************************
- * Dialog functions
- */
+let activeUser = null;
 
 const dialogSection = document.getElementById("dialogs");
 const loginSection = document.getElementById("login");
 const passwordSection = document.getElementById("passwords");
 
+const loginOutput = document.getElementById("login-output");
+const addUserOutput = document.getElementById("add-user-output");
+const addPasswordOutput = document.getElementById("add-password-output");
+const editPasswordOutput = document.getElementById("edit-password-output");
 
+const passwordContainer = document.getElementById("password-container");
+const accountOutput = document.getElementById("account-output");
+const usernameOutput = document.getElementById("username-output");
+const passwordOutput = document.getElementById("password-output");
+
+/****************************************
+ * Dialog functions
+ */
 function openDialog(id) {
   dialogSection.style.zIndex = "1000000";
 
@@ -44,8 +54,6 @@ function addUser() {
     "add-user-confirm-input"
   ).value;
 
-  const addUserOutput = document.getElementById("add-user-output");
-
   if (username.length === 0) {
     addUserOutput.innerHTML = "Please enter a username";
     return;
@@ -81,11 +89,12 @@ function addUser() {
   }, 1000);
 }
 
+/******************************************
+ * Login section
+ */
 function login() {
   const username = document.getElementById("username-input").value;
   const password = document.getElementById("password-input").value;
-
-  const loginOutput = document.getElementById("login-output");
 
   if (username.length === 0) {
     loginOutput.innerHTML = "Please enter a username";
@@ -103,7 +112,11 @@ function login() {
     return;
   }
 
+  // Load passwords
+  loadPasswords(username);
+
   // Login user
+  activeUser = username;
   loginOutput.style.color = "var(--color-success)";
   loginOutput.innerHTML = "Login successful";
 
@@ -113,4 +126,116 @@ function login() {
   setTimeout(() => {
     loginOutput.style = "";
   }, 500);
+}
+
+/****************************************
+ * Password section
+ */
+let activePassword = null;
+function loadPasswords(user) {
+  const passwords = db.getPasswords(user);
+
+  passwordContainer.innerHTML = "";
+  for (let i = 0; i < passwords.length; i++) {
+    const password = passwords[i];
+    const span = document.createElement("span");
+    span.classList.add("password");
+    span.innerHTML = password.name;
+    span.addEventListener("click", () => {
+      // Highlight span
+      span.classList.add("active");
+      if (activePassword) {
+        activePassword.classList.remove("active");
+      }
+      activePassword = span;
+      // Show password
+      accountOutput.value = password.name;
+      usernameOutput.value = password.username;
+      passwordOutput.value = password.password;
+    });
+    passwordContainer.appendChild(span);
+  }
+}
+
+function logOut() {
+  location.reload();
+}
+
+function copyToClipboard(text) {
+  clipboard.copy(text);
+}
+
+function addPassword() {
+  const name = document.getElementById("add-password-name-input").value;
+  const username = document.getElementById("add-password-username-input").value;
+  const password = document.getElementById("add-password-password-input").value;
+
+  if (name.length === 0) {
+    addPasswordOutput.innerHTML = "Please enter a name";
+    return;
+  }
+  if (username.length === 0) {
+    addPasswordOutput.innerHTML = "Please enter a username";
+    return;
+  }
+  if (password.length === 0) {
+    addPasswordOutput.innerHTML = "Please enter a password";
+    return;
+  }
+
+  // Add password to the database
+  try {
+    console.log(activeUser, name, username, password);
+    db.addPassword(activeUser, name, username, password);
+    addPasswordOutput.style.color = "var(--color-success)";
+    addPasswordOutput.innerHTML = "Password added sucesfully";
+  } catch (error) {
+    addPasswordOutput.innerHTML = "Something went wrong";
+  }
+
+  // Close the dialog
+  setTimeout(() => {
+    _closeDialogs();
+    setTimeout(() => {
+      addPasswordOutput.style = "";
+      loadPasswords();
+    }, 300);
+  }, 1000);
+}
+
+function editPassword() {
+  const name = document.getElementById("edit-password-name-input").value;
+  const username = document.getElementById("edit-password-username-input").value;
+  const password = document.getElementById("edit-password-password-input").value;
+
+  if (name.length === 0) {
+    editPasswordOutput.innerHTML = "Please enter a name";
+    return;
+  }
+  if (username.length === 0) {
+    editPasswordOutput.innerHTML = "Please enter a username";
+    return;
+  }
+  if (password.length === 0) {
+    editPasswordOutput.innerHTML = "Please enter a password";
+    return;
+  }
+
+  // Edit password in the database
+  try {
+    db.editPassword(activeUser, activePassword.innerHTML, name, username, password);
+    editPasswordOutput.style.color = "var(--color-success)";
+    editPasswordOutput.innerHTML = "Password edited sucesfully";
+  } catch (error) {
+    editPasswordOutput.innerHTML = "Something went wrong";
+  }
+
+  // Close the dialog
+  setTimeout(() => {
+    _closeDialogs();
+    setTimeout(() => {
+      editPasswordOutput.style = "";
+      loadPasswords();
+    }, 300);
+  }, 1000);
 }

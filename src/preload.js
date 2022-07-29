@@ -1,4 +1,4 @@
-const { contextBridge } = require("electron");
+const { contextBridge, clipboard } = require("electron");
 const db = require("./db");
 
 // make db accessible from renderer
@@ -12,4 +12,8 @@ contextBridge.exposeInMainWorld("db", {
     db.updatePassword(id, user_owner, name, username, password),
   deletePassword: (id, user_owner, name, username, password) =>
     db.deletePassword(id, user_owner, name, username, password),
+});
+
+contextBridge.exposeInMainWorld("clipboard", {
+  copy: (text) => clipboard.writeText(text),
 });

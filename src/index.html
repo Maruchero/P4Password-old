@@ -10,6 +10,7 @@
 </head>
 
 <body>
+  <!-- Dialogs -->
   <section id="dialogs" onclick="closeDialogs(event)">
     <dialog id="add-user-dialog">
       <h1>Add User</h1>
@@ -20,11 +21,50 @@
         <input type="password" id="add-user-password-input">
         <label for="add-user-confirm-input">Confirm Password</label>
         <input type="password" id="add-user-confirm-input">
-        <label id="add-user-output"></label>
+        <label id="add-user-output" class="dialog-output"></label>
         <button id="add-user-confirm-button" onclick="addUser()">Confirm</button>
       </div>
     </dialog>
+    <dialog id="add-password-dialog">
+      <h1>Add Password</h1>
+      <div class="center">
+        <label for="add-password-name-input">Account</label>
+        <input type="text" id="add-password-name-input">
+        <label for="add-password-username-input">Username</label>
+        <input type="text" id="add-password-username-input">
+        <label for="add-password-password-input">Password</label>
+        <input type="password" id="add-password-password-input">
+        <label id="add-password-output" class="dialog-output"></label>
+        <button id="add-password-confirm-button" onclick="addPassword()">Confirm</button>
+      </div>
+    </dialog>
+    <dialog id="edit-password-dialog">
+      <h1>Edit Password</h1>
+      <div class="center">
+        <label for="edit-password-name-input">Name</label>
+        <input type="text" id="edit-password-name-input">
+        <label for="edit-password-username-input">Username</label>
+        <input type="text" id="edit-password-username-input">
+        <label for="edit-password-password-input">Password</label>
+        <input type="password" id="edit-password-password-input">
+        <label id="edit-password-output" class="dialog-output"></label>
+        <button id="edit-password-confirm-button" onclick="editPassword()">Confirm</button>
+      </div>
+    </dialog>
+    <dialog id="delete-password-dialog">
+      <h1>Delete Password</h1>
+      <div class="center">
+        <img src="../img/alert.svg">
+        <label>Are you sure you want to delete password for <b id="delete-password-name"></b>?</label>
+        <div>
+          <button id="delete-password-confirm-button" onclick="deletePassword()">Confirm</button>
+          <button id="delete-password-cancel-button" onclick="_closeDialogs()">Cancel</button>
+        </div>
+      </div>
+    </dialog>
   </section>
+
+  <!-- Shown UI -->
   <section id="login">
     <button id="add-user-button" onclick="openDialog('add-user-dialog')">Add User</button>
     <div class="center">
@@ -37,38 +77,37 @@
       <button id="login-button" onclick="login()">Login</button>
     </div>
   </section>
+
   <section id="passwords">
     <div class="password-container">
       <input type="search" placeholder="Search...">
       <div id="password-container">
-        <span class="password active">Gmail</span>
-        <span class="password">Gmail</span>
-        <span class="password">Gmail</span>
       </div>
     </div>
     <div class="button-bar">
-      <button><i class="fa-solid fa-plus"></i></button>
-      <button disabled="disabled"><i class="fa-solid fa-pen"></i></button>
-      <button disabled="disabled"><i class="fa-solid fa-trash"></i></button>
-      <button>Log Out</button>
+      <button title="Add" onclick="openDialog('add-password-dialog')"><i class="fa-solid fa-plus"></i></button>
+      <button disabled title="Edit" onclick="openDialog('edit-password-dialog')"><i class="fa-solid fa-pen"></i></button>
+      <button disabled title="Remove" onclick="openDialog('delete-password-dialog')"><i class="fa-solid fa-trash"></i></button>
+      <button onclick="logOut()">Log Out</button>
     </div>
     <label for="account-output">Account</label>
     <div>
-      <input type="text" id="account-output" value="Gmail">
-      <button><i class="fa-regular fa-clone"></i></button>
+      <input type="text" id="account-output" disabled>
+      <button onclick="copyToClipboard(accountOutput.value)"><i class="fa-regular fa-clone"></i></button>
     </div>
     <label for="username-output">Username</label>
     <div>
-      <input type="text" id="username-output" value="potatoes444@gmail.com">
-      <button><i class="fa-regular fa-clone"></i></button>
+      <input type="text" id="username-output" disabled>
+      <button onclick="copyToClipboard(usernameOutput.value)"><i class="fa-regular fa-clone"></i></button>
     </div>
     <label for="password-output">Password</label>
     <div>
-      <input type="text" id="password-output" value="a3£dkH7g@b8NC&a">
-      <button><i class="fa-regular fa-clone"></i></button>
+      <input type="text" id="password-output" disabled>
+      <button onclick="copyToClipboard(passwordOutput.value)"><i class="fa-regular fa-clone"></i></button>
     </div>
   </section>
 
+  <!-- Scripts -->
   <script src="renderer.js"></script>
 </body>
 

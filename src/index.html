@@ -6,16 +6,34 @@
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
+    <section id="dialogs" onclick="closeDialogs(event)">
+      <dialog id="add-user-dialog">
+        <h1>Add User</h1>
+        <div class="center">
+          <label for="add-user-username-input">Username</label>
+          <input type="text" id="add-user-username-input">
+          <label for="add-user-password-input">Password</label>
+          <input type="text" id="add-user-password-input">
+          <label for="add-user-confirm-input">Confirm Password</label>
+          <input type="text" id="add-user-confirm-input">
+          <label id="add-user-output"></label>
+          <button id="add-user-confirm-button">Confirm</button>
+        </div>
+      </dialog>
+    </section>
     <section id="login">
-      <button id="add-user-button">Add User</button>
+      <button id="add-user-button" onclick="openDialog('add-user-dialog')">Add User</button>
       <div class="center">
         <span class="user-image"></span>
         <label for="username-input">Username</label>
         <input type="text" id="username-input">
         <label for="password-input">Password</label>
         <input type="password" id="password-input">
+        <label id="login-output"></label>
         <button id="login-button">Login</button>
       </div>
     </section>
+
+    <script src="renderer.js"></script>
   </body>
 </html>

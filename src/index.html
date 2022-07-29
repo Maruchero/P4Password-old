@@ -1,39 +1,75 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Hello World!</title>
-    <link rel="stylesheet" href="index.css" />
-  </head>
-  <body>
-    <section id="dialogs" onclick="closeDialogs(event)">
-      <dialog id="add-user-dialog">
-        <h1>Add User</h1>
-        <div class="center">
-          <label for="add-user-username-input">Username</label>
-          <input type="text" id="add-user-username-input">
-          <label for="add-user-password-input">Password</label>
-          <input type="text" id="add-user-password-input">
-          <label for="add-user-confirm-input">Confirm Password</label>
-          <input type="text" id="add-user-confirm-input">
-          <label id="add-user-output"></label>
-          <button id="add-user-confirm-button">Confirm</button>
-        </div>
-      </dialog>
-    </section>
-    <section id="login">
-      <button id="add-user-button" onclick="openDialog('add-user-dialog')">Add User</button>
-      <div class="center">
-        <span class="user-image"></span>
-        <label for="username-input">Username</label>
-        <input type="text" id="username-input">
-        <label for="password-input">Password</label>
-        <input type="password" id="password-input">
-        <label id="login-output"></label>
-        <button id="login-button">Login</button>
-      </div>
-    </section>
 
-    <script src="renderer.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>P4Password</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <section id="dialogs" onclick="closeDialogs(event)">
+    <dialog id="add-user-dialog">
+      <h1>Add User</h1>
+      <div class="center">
+        <label for="add-user-username-input">Username</label>
+        <input type="text" id="add-user-username-input">
+        <label for="add-user-password-input">Password</label>
+        <input type="password" id="add-user-password-input">
+        <label for="add-user-confirm-input">Confirm Password</label>
+        <input type="password" id="add-user-confirm-input">
+        <label id="add-user-output"></label>
+        <button id="add-user-confirm-button" onclick="addUser()">Confirm</button>
+      </div>
+    </dialog>
+  </section>
+  <section id="login">
+    <button id="add-user-button" onclick="openDialog('add-user-dialog')">Add User</button>
+    <div class="center">
+      <span class="user-image"></span>
+      <label for="username-input">Username</label>
+      <input type="text" id="username-input">
+      <label for="password-input">Password</label>
+      <input type="password" id="password-input">
+      <label id="login-output"></label>
+      <button id="login-button" onclick="login()">Login</button>
+    </div>
+  </section>
+  <section id="passwords">
+    <div class="password-container">
+      <input type="search" placeholder="Search...">
+      <div id="password-container">
+        <span class="password active">Gmail</span>
+        <span class="password">Gmail</span>
+        <span class="password">Gmail</span>
+      </div>
+    </div>
+    <div class="button-bar">
+      <button><i class="fa-solid fa-plus"></i></button>
+      <button disabled="disabled"><i class="fa-solid fa-pen"></i></button>
+      <button disabled="disabled"><i class="fa-solid fa-trash"></i></button>
+      <button>Log Out</button>
+    </div>
+    <label for="account-output">Account</label>
+    <div>
+      <input type="text" id="account-output" value="Gmail">
+      <button><i class="fa-regular fa-clone"></i></button>
+    </div>
+    <label for="username-output">Username</label>
+    <div>
+      <input type="text" id="username-output" value="potatoes444@gmail.com">
+      <button><i class="fa-regular fa-clone"></i></button>
+    </div>
+    <label for="password-output">Password</label>
+    <div>
+      <input type="text" id="password-output" value="a3£dkH7g@b8NC&a">
+      <button><i class="fa-regular fa-clone"></i></button>
+    </div>
+  </section>
+
+  <script src="renderer.js"></script>
+</body>
+
 </html>

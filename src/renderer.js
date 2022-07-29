@@ -3,6 +3,9 @@
  */
 
 const dialogSection = document.getElementById("dialogs");
+const loginSection = document.getElementById("login");
+const passwordSection = document.getElementById("passwords");
+
 
 function openDialog(id) {
   dialogSection.style.zIndex = "1000000";
@@ -76,4 +79,38 @@ function addUser() {
       addUserOutput.style = "";
     }, 300);
   }, 1000);
+}
+
+function login() {
+  const username = document.getElementById("username-input").value;
+  const password = document.getElementById("password-input").value;
+
+  const loginOutput = document.getElementById("login-output");
+
+  if (username.length === 0) {
+    loginOutput.innerHTML = "Please enter a username";
+    return;
+  }
+  if (password.length === 0) {
+    loginOutput.innerHTML = "Please enter a password";
+    return;
+  }
+
+  // Check if user exists
+  const user = db.getUser(username);
+  if (!user || user.password !== password) {
+    loginOutput.innerHTML = "Invalid username or password";
+    return;
+  }
+
+  // Login user
+  loginOutput.style.color = "var(--color-success)";
+  loginOutput.innerHTML = "Login successful";
+
+  passwordSection.style = "left: 0";
+  loginSection.style = "opacity: .5";
+
+  setTimeout(() => {
+    loginOutput.style = "";
+  }, 500);
 }

@@ -6,12 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>P4Password</title>
   <link rel="stylesheet" href="index.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+    integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
   <!-- Dialogs -->
-  <section id="dialogs" onclick="closeDialogs(event)">
+  <section id="dialogs" onclick="if (event.target === this) closeDialogs()">
+    <!-- Add User-->
     <dialog id="add-user-dialog">
       <h1>Add User</h1>
       <div class="center">
@@ -25,6 +28,7 @@
         <button id="add-user-confirm-button" onclick="addUser()">Confirm</button>
       </div>
     </dialog>
+    <!-- Add password -->
     <dialog id="add-password-dialog">
       <h1>Add Password</h1>
       <div class="center">
@@ -33,11 +37,12 @@
         <label for="add-password-username-input">Username</label>
         <input type="text" id="add-password-username-input">
         <label for="add-password-password-input">Password</label>
-        <input type="password" id="add-password-password-input">
+        <input type="text" id="add-password-password-input">
         <label id="add-password-output" class="dialog-output"></label>
         <button id="add-password-confirm-button" onclick="addPassword()">Confirm</button>
       </div>
     </dialog>
+    <!-- Edit password -->
     <dialog id="edit-password-dialog">
       <h1>Edit Password</h1>
       <div class="center">
@@ -46,19 +51,21 @@
         <label for="edit-password-username-input">Username</label>
         <input type="text" id="edit-password-username-input">
         <label for="edit-password-password-input">Password</label>
-        <input type="password" id="edit-password-password-input">
+        <input type="text" id="edit-password-password-input">
         <label id="edit-password-output" class="dialog-output"></label>
         <button id="edit-password-confirm-button" onclick="editPassword()">Confirm</button>
       </div>
     </dialog>
+    <!-- Delete password -->
     <dialog id="delete-password-dialog">
       <h1>Delete Password</h1>
       <div class="center">
-        <img src="../img/alert.svg">
-        <label>Are you sure you want to delete password for <b id="delete-password-name"></b>?</label>
-        <div>
+        <img src="../img/alert.png" width="170" height="170">
+        <span>Are you sure you want to delete password for <b id="delete-password-name"></b>?</span>
+        <label id="delete-password-output"></label>
+        <div class="button-bar">
           <button id="delete-password-confirm-button" onclick="deletePassword()">Confirm</button>
-          <button id="delete-password-cancel-button" onclick="_closeDialogs()">Cancel</button>
+          <button id="delete-password-cancel-button" onclick="closeDialogs()">Cancel</button>
         </div>
       </div>
     </dialog>
@@ -86,8 +93,10 @@
     </div>
     <div class="button-bar">
       <button title="Add" onclick="openDialog('add-password-dialog')"><i class="fa-solid fa-plus"></i></button>
-      <button disabled title="Edit" onclick="openDialog('edit-password-dialog')"><i class="fa-solid fa-pen"></i></button>
-      <button disabled title="Remove" onclick="openDialog('delete-password-dialog')"><i class="fa-solid fa-trash"></i></button>
+      <button disabled title="Edit" onclick="openDialog('edit-password-dialog')"><i
+          class="fa-solid fa-pen"></i></button>
+      <button disabled title="Remove" onclick="openDialog('delete-password-dialog')"><i
+          class="fa-solid fa-trash"></i></button>
       <button onclick="logOut()">Log Out</button>
     </div>
     <label for="account-output">Account</label>

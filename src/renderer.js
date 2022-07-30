@@ -1,18 +1,36 @@
 let activeUser = null;
 
+/********************************************
+ * DOM Elements
+ */
+// Sections
 const dialogSection = document.getElementById("dialogs");
 const loginSection = document.getElementById("login");
 const passwordSection = document.getElementById("passwords");
 
+// Outputs (for example: User added succesfully)
 const loginOutput = document.getElementById("login-output");
 const addUserOutput = document.getElementById("add-user-output");
 const addPasswordOutput = document.getElementById("add-password-output");
 const editPasswordOutput = document.getElementById("edit-password-output");
+const deletePasswordOutput = document.getElementById("delete-password-output");
 
+// Passwords Section Elements
 const passwordContainer = document.getElementById("password-container");
 const accountOutput = document.getElementById("account-output");
 const usernameOutput = document.getElementById("username-output");
 const passwordOutput = document.getElementById("password-output");
+
+// Dialogs presetted fields
+const editPasswordName = document.getElementById("edit-password-name-input");
+const editPasswordUsername = document.getElementById(
+  "edit-password-username-input"
+);
+const editPasswordPassword = document.getElementById(
+  "edit-password-password-input"
+);
+
+const deletePasswordName = document.getElementById("delete-password-name");
 
 /****************************************
  * Dialog functions
@@ -27,13 +45,7 @@ function openDialog(id) {
   }
 }
 
-function closeDialogs(event) {
-  if (event.target === dialogSection) {
-    _closeDialogs();
-  }
-}
-
-function _closeDialogs() {
+function closeDialogs() {
   const dialogs = document.getElementsByTagName("dialog");
   for (var i = 0; i < dialogs.length; i++) {
     dialogs[i].classList.remove("active");
@@ -82,7 +94,7 @@ function addUser() {
 
   // Close the dialog
   setTimeout(() => {
-    _closeDialogs();
+    closeDialogs();
     setTimeout(() => {
       addUserOutput.style = "";
     }, 300);
@@ -133,9 +145,20 @@ function login() {
  */
 let activePassword = null;
 function loadPasswords(user) {
+  // cllear previous status
+  activePassword = null;
+  accountOutput.value = "";
+  usernameOutput.value = "";
+  passwordOutput.value = "";
+  editPasswordName.value = "";
+  editPasswordUsername.value = "";
+  editPasswordPassword.value = "";
+  deletePasswordName.innerHTML = "";
+  passwordContainer.innerHTML = "";
+
+  // Load passwords
   const passwords = db.getPasswords(user);
 
-  passwordContainer.innerHTML = "";
   for (let i = 0; i < passwords.length; i++) {
     const password = passwords[i];
     const span = document.createElement("span");
@@ -146,12 +169,24 @@ function loadPasswords(user) {
       span.classList.add("active");
       if (activePassword) {
         activePassword.classList.remove("active");
+      } else {
+        // activate edit and delete buttons
+        const buttonBar = passwordSection.querySelector(".button-bar");
+        for (let i = 0; i < buttonBar.children.length; i++) {
+          buttonBar.children[i].removeAttribute("disabled");
+        }
       }
       activePassword = span;
+      activePassword.dataset.id = password.id;
       // Show password
       accountOutput.value = password.name;
       usernameOutput.value = password.username;
       passwordOutput.value = password.password;
+      // Preset all dialogs
+      editPasswordName.value = password.name;
+      editPasswordUsername.value = password.username;
+      editPasswordPassword.value = password.password;
+      deletePasswordName.innerHTML = password.name;
     });
     passwordContainer.appendChild(span);
   }
@@ -190,23 +225,24 @@ function addPassword() {
     addPasswordOutput.style.color = "var(--color-success)";
     addPasswordOutput.innerHTML = "Password added sucesfully";
   } catch (error) {
+    console.error(error);
     addPasswordOutput.innerHTML = "Something went wrong";
   }
 
   // Close the dialog
   setTimeout(() => {
-    _closeDialogs();
+    closeDialogs();
     setTimeout(() => {
       addPasswordOutput.style = "";
-      loadPasswords();
+      loadPasswords(activeUser);
     }, 300);
   }, 1000);
 }
 
 function editPassword() {
-  const name = document.getElementById("edit-password-name-input").value;
-  const username = document.getElementById("edit-password-username-input").value;
-  const password = document.getElementById("edit-password-password-input").value;
+  const name = editPasswordName.value;
+  const username = editPasswordUsername.value;
+  const password = editPasswordPassword.value;
 
   if (name.length === 0) {
     editPasswordOutput.innerHTML = "Please enter a name";
@@ -223,19 +259,53 @@ function editPassword() {
 
   // Edit password in the database
   try {
-    db.editPassword(activeUser, activePassword.innerHTML, name, username, password);
+    db.updatePassword(
+      activePassword.dataset.id,
+      activeUser,
+      name,
+      username,
+      password
+    );
     editPasswordOutput.style.color = "var(--color-success)";
     editPasswordOutput.innerHTML = "Password edited sucesfully";
   } catch (error) {
+    console.error(error);
     editPasswordOutput.innerHTML = "Something went wrong";
   }
 
   // Close the dialog
   setTimeout(() => {
-    _closeDialogs();
+    closeDialogs();
     setTimeout(() => {
       editPasswordOutput.style = "";
-      loadPasswords();
+      loadPasswords(activeUser);
+    }, 300);
+  }, 1000);
+}
+
+function deletePassword() {
+  // Delete password from the database
+  try {
+    db.deletePassword(
+      activePassword.dataset.id,
+      activeUser,
+      accountOutput.value,
+      usernameOutput.value,
+      passwordOutput.value
+    );
+    deletePasswordOutput.style.color = "var(--color-success)";
+    deletePasswordOutput.innerHTML = "Password deleted sucesfully";
+  } catch (error) {
+    console.error(error);
+    deletePasswordOutput.innerHTML = "Something went wrong";
+  }
+
+  // Close the dialog
+  setTimeout(() => {
+    closeDialogs();
+    setTimeout(() => {
+      deletePasswordOutput.style = "";
+      loadPasswords(activeUser);
     }, 300);
   }, 1000);
 }

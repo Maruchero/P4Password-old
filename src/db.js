@@ -32,7 +32,7 @@ function updatePassword(id, user_owner, name, username, password) {
 
 function deletePassword(id, user_owner, name, username, password) {
   db.prepare(
-    "DELETE FROM passwords WHERE id = ?, user_owner = ?, name = ?, username = ?, password = ?"
+    "DELETE FROM passwords WHERE id = ? AND user_owner = ? AND name = ? AND username = ? AND password = ?"
   ).run(id, user_owner, name, username, password);
 }
 

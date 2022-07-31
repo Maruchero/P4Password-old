@@ -59,7 +59,7 @@ function closeDialogs() {
 /******************************************
  * Add user dialog
  */
-function addUser() {
+async function addUser() {
   const username = document.getElementById("add-user-username-input").value;
   const password = document.getElementById("add-user-password-input").value;
   const passwordConfirm = document.getElementById(
@@ -85,7 +85,7 @@ function addUser() {
 
   // Add user to the database
   try {
-    db.addUser(username, password, null);
+    db.addUser(username, await crypt.sha256(password), null);
     addUserOutput.style.color = "var(--color-success)";
     addUserOutput.innerHTML = "User added sucesfully";
   } catch (error) {
@@ -104,9 +104,10 @@ function addUser() {
 /******************************************
  * Login section
  */
-function login() {
+async function login() {
   const username = document.getElementById("username-input").value;
   const password = document.getElementById("password-input").value;
+  console.log(username, password);
 
   if (username.length === 0) {
     loginOutput.innerHTML = "Please enter a username";
@@ -119,7 +120,7 @@ function login() {
 
   // Check if user exists
   const user = db.getUser(username);
-  if (!user || user.password !== password) {
+  if (!user || user.password !== (await crypt.sha256(password))) {
     loginOutput.innerHTML = "Invalid username or password";
     return;
   }
@@ -144,7 +145,7 @@ function login() {
  * Password section
  */
 let activePassword = null;
-function loadPasswords(user) {
+async function loadPasswords(user) {
   // cllear previous status
   activePassword = null;
   accountOutput.value = "";
@@ -163,8 +164,8 @@ function loadPasswords(user) {
     const password = passwords[i];
     const span = document.createElement("span");
     span.classList.add("password");
-    span.innerHTML = password.name;
-    span.addEventListener("click", () => {
+    span.innerHTML = await crypt.decrypt(password.name);
+    span.addEventListener("click", async () => {
       // Highlight span
       span.classList.add("active");
       if (activePassword) {
@@ -178,6 +179,10 @@ function loadPasswords(user) {
       }
       activePassword = span;
       activePassword.dataset.id = password.id;
+      // Decrypt password
+      password.name = await crypt.decrypt(password.name);
+      password.username = await crypt.decrypt(password.username);
+      password.password = await crypt.decrypt(password.password);
       // Show password
       accountOutput.value = password.name;
       usernameOutput.value = password.username;
@@ -196,11 +201,10 @@ function logOut() {
   location.reload();
 }
 
-function copyToClipboard(text) {
-  clipboard.copy(text);
-}
-
-function addPassword() {
+/******************************************
+ * CRUD dialogs
+ */
+async function addPassword() {
   const name = document.getElementById("add-password-name-input").value;
   const username = document.getElementById("add-password-username-input").value;
   const password = document.getElementById("add-password-password-input").value;
@@ -220,8 +224,12 @@ function addPassword() {
 
   // Add password to the database
   try {
-    console.log(activeUser, name, username, password);
-    db.addPassword(activeUser, name, username, password);
+    db.addPassword(
+      activeUser,
+      await crypt.encrypt(name),
+      await crypt.encrypt(username),
+      await crypt.encrypt(password)
+    );
     addPasswordOutput.style.color = "var(--color-success)";
     addPasswordOutput.innerHTML = "Password added sucesfully";
   } catch (error) {
@@ -239,7 +247,7 @@ function addPassword() {
   }, 1000);
 }
 
-function editPassword() {
+async function editPassword() {
   const name = editPasswordName.value;
   const username = editPasswordUsername.value;
   const password = editPasswordPassword.value;
@@ -262,9 +270,9 @@ function editPassword() {
     db.updatePassword(
       activePassword.dataset.id,
       activeUser,
-      name,
-      username,
-      password
+      await crypt.encrypt(name),
+      await crypt.encrypt(username),
+      await crypt.encrypt(password)
     );
     editPasswordOutput.style.color = "var(--color-success)";
     editPasswordOutput.innerHTML = "Password edited sucesfully";
@@ -283,15 +291,15 @@ function editPassword() {
   }, 1000);
 }
 
-function deletePassword() {
+async function deletePassword() {
   // Delete password from the database
   try {
     db.deletePassword(
       activePassword.dataset.id,
       activeUser,
-      accountOutput.value,
-      usernameOutput.value,
-      passwordOutput.value
+      await crypt.encrypt(accountOutput.value),
+      await crypt.encrypt(usernameOutput.value),
+      await crypt.encrypt(passwordOutput.value)
     );
     deletePasswordOutput.style.color = "var(--color-success)";
     deletePasswordOutput.innerHTML = "Password deleted sucesfully";

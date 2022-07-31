@@ -243,6 +243,8 @@ button {
   background: #fcfcfc;
   border: 2px solid #acc3d3;
   border-radius: 5px;
+
+  overflow-y: auto;
 }
 
 #password-container span {
@@ -254,6 +256,8 @@ button {
   font: var(--font-2);
   line-height: 34px;
   font-size: 14px;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
 }
 
 #password-container span:hover {

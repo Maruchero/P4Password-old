@@ -97,6 +97,10 @@ async function addUser() {
     closeDialogs();
     setTimeout(() => {
       addUserOutput.style = "";
+      addUserOutput.innerHTML = "";
+      document.getElementById("add-user-username-input").value = "";
+      document.getElementById("add-user-password-input").value = "";
+      document.getElementById("add-user-confirm-input").value = "";
     }, 300);
   }, 1000);
 }
@@ -133,7 +137,7 @@ async function login() {
   loginOutput.style.color = "var(--color-success)";
   loginOutput.innerHTML = "Login successful";
 
-  passwordSection.style = "left: 0";
+  passwordSection.style = "left: 0; display: block;";
   loginSection.style = "opacity: .5";
 
   setTimeout(() => {
@@ -144,10 +148,10 @@ async function login() {
 /****************************************
  * Password section
  */
-let activePassword = null;
+let activeSpan = null;
 async function loadPasswords(user) {
   // cllear previous status
-  activePassword = null;
+  activeSpan = null;
   accountOutput.value = "";
   usernameOutput.value = "";
   passwordOutput.value = "";
@@ -165,33 +169,37 @@ async function loadPasswords(user) {
     const span = document.createElement("span");
     span.classList.add("password");
     span.innerHTML = await crypt.decrypt(password.name);
+
     span.addEventListener("click", async () => {
       // Highlight span
       span.classList.add("active");
-      if (activePassword) {
-        activePassword.classList.remove("active");
-      } else {
+      if (!activeSpan) {
         // activate edit and delete buttons
         const buttonBar = passwordSection.querySelector(".button-bar");
         for (let i = 0; i < buttonBar.children.length; i++) {
           buttonBar.children[i].removeAttribute("disabled");
         }
+        activeSpan = span;
+      } else if (activeSpan !== span) {
+        // if clicked a different span remove highlighting from the previous
+        activeSpan.classList.remove("active");
       }
-      activePassword = span;
-      activePassword.dataset.id = password.id;
+      activeSpan = span;
+      activeSpan.dataset.id = password.id;
       // Decrypt password
-      password.name = await crypt.decrypt(password.name);
-      password.username = await crypt.decrypt(password.username);
-      password.password = await crypt.decrypt(password.password);
+      const decrypted = {};
+      decrypted.name = await crypt.decrypt(password.name);
+      decrypted.username = await crypt.decrypt(password.username);
+      decrypted.password = await crypt.decrypt(password.password);
       // Show password
-      accountOutput.value = password.name;
-      usernameOutput.value = password.username;
-      passwordOutput.value = password.password;
+      accountOutput.value = decrypted.name;
+      usernameOutput.value = decrypted.username;
+      passwordOutput.value = decrypted.password;
       // Preset all dialogs
-      editPasswordName.value = password.name;
-      editPasswordUsername.value = password.username;
-      editPasswordPassword.value = password.password;
-      deletePasswordName.innerHTML = password.name;
+      editPasswordName.value = decrypted.name;
+      editPasswordUsername.value = decrypted.username;
+      editPasswordPassword.value = decrypted.password;
+      deletePasswordName.innerHTML = decrypted.name;
     });
     passwordContainer.appendChild(span);
   }
@@ -242,6 +250,20 @@ async function addPassword() {
     closeDialogs();
     setTimeout(() => {
       addPasswordOutput.style = "";
+      addPasswordOutput.innerHTML = "";
+      document.getElementById("add-password-name-input").value = "";
+      document.getElementById("add-password-username-input").value = "";
+      document.getElementById("add-password-password-input").value = "";
+      // deactivate edit and delete buttons
+      const editButton = passwordSection.querySelector(
+        ".button-bar button[title='Edit']"
+      );
+      const deleteButton = passwordSection.querySelector(
+        ".button-bar button[title='Delete']"
+      );
+      editButton.setAttribute("disabled", "disabled");
+      deleteButton.setAttribute("disabled", "disabled");
+      // reload passwords
       loadPasswords(activeUser);
     }, 300);
   }, 1000);
@@ -268,7 +290,7 @@ async function editPassword() {
   // Edit password in the database
   try {
     db.updatePassword(
-      activePassword.dataset.id,
+      activeSpan.dataset.id,
       activeUser,
       await crypt.encrypt(name),
       await crypt.encrypt(username),
@@ -286,6 +308,20 @@ async function editPassword() {
     closeDialogs();
     setTimeout(() => {
       editPasswordOutput.style = "";
+      editPasswordOutput.innerHTML = "";
+      document.getElementById("edit-password-name-input").value = "";
+      document.getElementById("edit-password-username-input").value = "";
+      document.getElementById("edit-password-password-input").value = "";
+      // deactivate edit and delete buttons
+      const editButton = passwordSection.querySelector(
+        ".button-bar button[title='Edit']"
+      );
+      const deleteButton = passwordSection.querySelector(
+        ".button-bar button[title='Delete']"
+      );
+      editButton.setAttribute("disabled", "disabled");
+      deleteButton.setAttribute("disabled", "disabled");
+      // reload passwords
       loadPasswords(activeUser);
     }, 300);
   }, 1000);
@@ -295,7 +331,7 @@ async function deletePassword() {
   // Delete password from the database
   try {
     db.deletePassword(
-      activePassword.dataset.id,
+      activeSpan.dataset.id,
       activeUser,
       await crypt.encrypt(accountOutput.value),
       await crypt.encrypt(usernameOutput.value),
@@ -313,6 +349,18 @@ async function deletePassword() {
     closeDialogs();
     setTimeout(() => {
       deletePasswordOutput.style = "";
+      deletePasswordOutput.innerHTML = "";
+      deletePasswordName.innerHTML = "";
+      // deactivate edit and delete buttons
+      const editButton = passwordSection.querySelector(
+        ".button-bar button[title='Edit']"
+      );
+      const deleteButton = passwordSection.querySelector(
+        ".button-bar button[title='Delete']"
+      );
+      editButton.setAttribute("disabled", "disabled");
+      deleteButton.setAttribute("disabled", "disabled");
+      // reload passwords
       loadPasswords(activeUser);
     }, 300);
   }, 1000);

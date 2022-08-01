@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato&family=Open+Sans&family=Poppins&family=Roboto:ital@1&display=swap");
+
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa&family=Lato&family=Open+Sans&family=Poppins&family=Quicksand:wght@600&family=Roboto:ital@1&display=swap');
 
 :root {
   --palette-1: #f0f0f0;
@@ -11,8 +12,9 @@
 
   --font-1: 12px Poppins, Roboto, sans-serif;
   --font-2: 15px Open Sans, sans-serif;
-  --font-3: 16px Lato, cursive, sans-serif;
-  --font-4: 18px Open Sans, sans-serif;
+  --font-3: 16px Quicksand, cursive, sans-serif;
+  --font-4: 16px Lato, sans-serif;
+  --font-5: 18px Ubuntu, Lato, sans-serif;
 }
 
 body {
@@ -54,7 +56,7 @@ dialog * {
 }
 
 dialog h1 {
-  font: var(--font-4);
+  font: var(--font-5);
   color: #666;
   margin: 0;
 }
@@ -82,12 +84,29 @@ dialog input {
   background: var(--palette-1);
 }
 
+#add-password-dialog input, #edit-password-dialog input {
+  font: var(--font-3);
+}
+
+#add-password-password-input , #edit-password-password-input {
+  width: 260px;
+}
+
 dialog button {
   margin-top: 15px;
   width: 146px;
   border-radius: 5px;
   border: 2px solid var(--palette-2);
   box-shadow: 0px 4px 20px var(--palette-3);
+}
+
+dialog button.square-button {
+  width: 35px;
+  aspect-ratio: 1;
+  margin-left: 5px;
+  margin-top: 0;
+  color: #444;
+  background: var(--palette-1);
 }
 
 .dialog-output {
@@ -201,12 +220,14 @@ button {
   position: absolute;
   left: 342px;
   width: 370px;
+  color: #000;
+  font: var(--font-3);
 }
 
 #passwords input {
   height: 34px;
   background: #fcfcfc;
-  font: var(--font-3);
+  font: var(--font-4);
 }
 
 #passwords label {

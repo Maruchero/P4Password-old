@@ -37,7 +37,10 @@
         <label for="add-password-username-input">Username</label>
         <input type="text" id="add-password-username-input">
         <label for="add-password-password-input">Password</label>
-        <input type="text" id="add-password-password-input">
+        <div style="display: flex;">
+          <input type="text" id="add-password-password-input">
+          <button class="square-button" onclick="document.getElementById('add-password-password-input').value = generatePassword()"><i class="fa-solid fa-key"></i></button>
+        </div>
         <label id="add-password-output" class="dialog-output"></label>
         <button id="add-password-confirm-button" onclick="addPassword()">Confirm</button>
       </div>
@@ -51,7 +54,10 @@
         <label for="edit-password-username-input">Username</label>
         <input type="text" id="edit-password-username-input">
         <label for="edit-password-password-input">Password</label>
-        <input type="text" id="edit-password-password-input">
+        <div style="display: flex;">
+          <input type="text" id="edit-password-password-input">
+          <button class="square-button" onclick="document.getElementById('edit-password-password-input').value = generatePassword()"><i class="fa-solid fa-key"></i></button>
+        </div>
         <label id="edit-password-output" class="dialog-output"></label>
         <button id="edit-password-confirm-button" onclick="editPassword()">Confirm</button>
       </div>
@@ -77,7 +83,7 @@
     <div class="center">
       <span class="user-image"></span>
       <label for="username-input">Username</label>
-      <input type="text" id="username-input">
+      <input type="text" id="username-input" autofocus>
       <label for="password-input">Password</label>
       <input type="password" id="password-input">
       <label id="login-output"></label>

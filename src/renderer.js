@@ -149,6 +149,15 @@ async function login() {
 /****************************************
  * Password section
  */
+function generatePassword() {
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#!$%&/()=?*+-_.:,;<>";
+  let password = "";
+  for (var i = 0; i < 16; i++) {
+    password += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return password;
+}
+
 let activeSpan = null;
 async function loadPasswords(user) {
   // cllear previous status

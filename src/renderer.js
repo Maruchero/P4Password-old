@@ -158,6 +158,7 @@ function generatePassword() {
   return password;
 }
 
+const passwordSpans = [];
 let activeSpan = null;
 async function loadPasswords(user) {
   // cllear previous status
@@ -212,6 +213,18 @@ async function loadPasswords(user) {
       deletePasswordName.innerHTML = decrypted.name;
     });
     passwordContainer.appendChild(span);
+    passwordSpans.push(span);
+  }
+}
+
+function search(keyword) {
+  for (let i = 0; i < passwordSpans.length; i++) {
+    const span = passwordSpans[i];
+    if (span.innerHTML.toLowerCase().includes(keyword.toLowerCase())) {
+      span.style.display = "block";
+    } else {
+      span.style.display = "none";
+    }
   }
 }
 

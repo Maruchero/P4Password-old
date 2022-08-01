@@ -111,7 +111,6 @@ async function addUser() {
 async function login() {
   const username = document.getElementById("username-input").value;
   const password = document.getElementById("password-input").value;
-  console.log(username, password);
 
   if (username.length === 0) {
     loginOutput.innerHTML = "Please enter a username";
@@ -130,19 +129,21 @@ async function login() {
   }
 
   // Load passwords
-  loadPasswords(username);
-
-  // Login user
-  activeUser = username;
-  loginOutput.style.color = "var(--color-success)";
-  loginOutput.innerHTML = "Login successful";
-
-  passwordSection.style = "left: 0; display: block;";
-  loginSection.style = "opacity: .5";
-
-  setTimeout(() => {
-    loginOutput.style = "";
-  }, 500);
+  crypt.generateKey(password).then(() => {
+    loadPasswords(username);
+  
+    // Login user
+    activeUser = username;
+    loginOutput.style.color = "var(--color-success)";
+    loginOutput.innerHTML = "Login successful";
+  
+    passwordSection.style = "left: 0; display: block;";
+    loginSection.style = "opacity: .5";
+  
+    setTimeout(() => {
+      loginOutput.style = "";
+    }, 500);
+  });
 }
 
 /****************************************

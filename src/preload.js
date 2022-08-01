@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld("clipboard", {
 });
 
 contextBridge.exposeInMainWorld("crypt", {
+  generateKey: (base) => crypt.generateKey(base),
   encrypt: (text) => crypt.encrypt(text),
   decrypt: (text) => crypt.decrypt(text),
   sha256: (text) => crypt.sha256(text),

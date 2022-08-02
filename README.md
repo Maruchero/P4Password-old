@@ -6,7 +6,7 @@
 ![Language](https://img.shields.io/badge/author-Maruchero-blue)
 ![Language](https://img.shields.io/badge/version-1.00-lightgray)
 
-## Decsription
+## Description
 
 SImple and secure offline password saver. 😉
 
@@ -28,6 +28,14 @@ In the terminal go in the project folder and run
 To start the app run
 
     npm start
+
+## Installation
+
+You can install the app on your operative system also. You just need to run in the terminal
+    
+    npm run make
+
+This will generate an installer in the `./out` directory.
 
 ## How to use
 

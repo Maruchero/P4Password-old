@@ -1,6 +1,6 @@
 {
   "name": "p4password",
-  "productName": "p4password",
+  "productName": "P4Password",
   "version": "1.0.0",
   "description": "Cool password saver in electron",
   "main": "src/index.js",
@@ -19,18 +19,23 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "./img/icon.ico"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
+          "platforms": [
+            "darwin", "linux", "win32"
+          ],
           "config": {
-            "name": "p4password"
+            "name": "P4Password"
           }
         },
         {
           "name": "@electron-forge/maker-zip",
           "platforms": [
-            "darwin"
+            "darwin", "linux", "win32"
           ]
         },
         {

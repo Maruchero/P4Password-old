@@ -19,6 +19,16 @@ SImple and secure offline password saver. 😉
 
 ![](img/README_cryptography.jpg)
 
+## Execution
+
+In the terminal go in the project folder and run
+    
+    npm install
+
+To start the app run
+
+    npm start
+
 ## How to use
 
 At the beginning the app **has no user**. The first thing you need to do to user the app is **create a user** clicking on the **add user button**. Remember your password because nowadays **there is no way to recover it**.

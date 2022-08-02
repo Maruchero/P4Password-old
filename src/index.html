@@ -25,7 +25,12 @@
         <label for="add-user-confirm-input">Confirm Password</label>
         <input type="password" id="add-user-confirm-input">
         <label id="add-user-output" class="dialog-output"></label>
-        <button id="add-user-confirm-button" onclick="addUser()">Confirm</button>
+        <div style="display: flex;">
+          <input type="text" id="add-user-image-input" style="display: none">
+          <button id="add-user-confirm-button" onclick="addUser()">Confirm</button>
+          <button class="square-button" style="margin-top: 15px" onclick="sod()"><i
+              class="fa-solid fa-image"></i></button>
+        </div>
       </div>
     </dialog>
     <!-- Add password -->
@@ -39,7 +44,9 @@
         <label for="add-password-password-input">Password</label>
         <div style="display: flex;">
           <input type="text" id="add-password-password-input">
-          <button class="square-button" onclick="document.getElementById('add-password-password-input').value = generatePassword()"><i class="fa-solid fa-key"></i></button>
+          <button class="square-button"
+            onclick="document.getElementById('add-password-password-input').value = generatePassword()"><i
+              class="fa-solid fa-key"></i></button>
         </div>
         <label id="add-password-output" class="dialog-output"></label>
         <button id="add-password-confirm-button" onclick="addPassword()">Confirm</button>
@@ -56,7 +63,9 @@
         <label for="edit-password-password-input">Password</label>
         <div style="display: flex;">
           <input type="text" id="edit-password-password-input">
-          <button class="square-button" onclick="document.getElementById('edit-password-password-input').value = generatePassword()"><i class="fa-solid fa-key"></i></button>
+          <button class="square-button"
+            onclick="document.getElementById('edit-password-password-input').value = generatePassword()"><i
+              class="fa-solid fa-key"></i></button>
         </div>
         <label id="edit-password-output" class="dialog-output"></label>
         <button id="edit-password-confirm-button" onclick="editPassword()">Confirm</button>
@@ -81,7 +90,7 @@
   <section id="login">
     <button id="add-user-button" onclick="openDialog('add-user-dialog')">Add User</button>
     <div class="center">
-      <span class="user-image"></span>
+      <span class="user-image" id="user-image"></span>
       <label for="username-input">Username</label>
       <input type="text" id="username-input" autofocus>
       <label for="password-input">Password</label>

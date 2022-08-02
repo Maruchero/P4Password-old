@@ -36,6 +36,14 @@ function deletePassword(id, user_owner, name, username, password) {
   ).run(id, user_owner, name, username, password);
 }
 
+function getLastUser() {
+  return db.prepare("SELECT last_user FROM app_data").get();
+}
+
+function setLastUser(username) {
+  db.prepare("UPDATE app_data SET last_user = ?").run(username);
+}
+
 /* Exports */
 exports.getUser = getUser;
 exports.addUser = addUser;
@@ -43,3 +51,5 @@ exports.getPasswords = getPasswords;
 exports.addPassword = addPassword;
 exports.updatePassword = updatePassword;
 exports.deletePassword = deletePassword;
+exports.getLastUser = getLastUser;
+exports.setLastUser = setLastUser;

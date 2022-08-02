@@ -32,6 +32,30 @@ const editPasswordPassword = document.getElementById(
 
 const deletePasswordName = document.getElementById("delete-password-name");
 
+/*****************************************
+ * Load last user
+ */
+let lastUser = db.getUser(db.getLastUser().last_user);
+if (lastUser) {
+  const usernameInput = document.getElementById("username-input");
+  const userImage = document.getElementById("user-image");
+  // set username
+  usernameInput.value = lastUser.username;
+  // set the focus on the password field
+  document.getElementById("password-input").focus();
+  if (lastUser.image) {
+    // set user image
+    userImage.style.backgroundImage = `url("/${lastUser.image.replace(
+      /\\/g,
+      "/"
+    )}")`;
+    // if user changes username clear the style
+    usernameInput.addEventListener("input", () => {
+      userImage.style = "";
+    });
+  }
+}
+
 /****************************************
  * Dialog functions
  */
@@ -62,9 +86,8 @@ function closeDialogs() {
 async function addUser() {
   const username = document.getElementById("add-user-username-input").value;
   const password = document.getElementById("add-user-password-input").value;
-  const passwordConfirm = document.getElementById(
-    "add-user-confirm-input"
-  ).value;
+  const image = document.getElementById("add-user-image-input").value;
+  const confirm = document.getElementById("add-user-confirm-input").value;
 
   if (username.length === 0) {
     addUserOutput.innerHTML = "Please enter a username";
@@ -74,7 +97,7 @@ async function addUser() {
     addUserOutput.innerHTML = "Please enter a password";
     return;
   }
-  if (password !== passwordConfirm) {
+  if (password !== confirm) {
     addUserOutput.innerHTML = "Passwords do not match";
     return;
   }
@@ -85,7 +108,7 @@ async function addUser() {
 
   // Add user to the database
   try {
-    db.addUser(username, await crypt.sha256(password), null);
+    db.addUser(username, await crypt.sha256(password), image ? image : null);
     addUserOutput.style.color = "var(--color-success)";
     addUserOutput.innerHTML = "User added sucesfully";
   } catch (error) {
@@ -103,6 +126,11 @@ async function addUser() {
       document.getElementById("add-user-confirm-input").value = "";
     }, 300);
   }, 1000);
+}
+
+async function sod() {
+  const path = await dialog.chooseImage();
+  document.getElementById("add-user-image-input").value = path;
 }
 
 /******************************************
@@ -129,17 +157,18 @@ async function login() {
   }
 
   // Load passwords
+  db.setLastUser(username);
   crypt.generateKey(password).then(() => {
     loadPasswords(username);
-  
+
     // Login user
     activeUser = username;
     loginOutput.style.color = "var(--color-success)";
     loginOutput.innerHTML = "Login successful";
-  
+
     passwordSection.style = "left: 0; display: block;";
     loginSection.style = "opacity: .5";
-  
+
     setTimeout(() => {
       loginOutput.style = "";
     }, 500);
@@ -150,7 +179,8 @@ async function login() {
  * Password section
  */
 function generatePassword() {
-  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#!$%&/()=?*+-_.:,;<>";
+  const chars =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#!$%&/()=?*+-_.:,;<>";
   let password = "";
   for (var i = 0; i < 16; i++) {
     password += chars[Math.floor(Math.random() * chars.length)];

@@ -1,4 +1,4 @@
-const { contextBridge, clipboard } = require("electron");
+const { contextBridge, clipboard, ipcRenderer } = require("electron");
 const db = require("./db");
 const crypt = require("./crypt");
 
@@ -13,6 +13,8 @@ contextBridge.exposeInMainWorld("db", {
     db.updatePassword(id, user_owner, name, username, password),
   deletePassword: (id, user_owner, name, username, password) =>
     db.deletePassword(id, user_owner, name, username, password),
+  getLastUser: () => db.getLastUser(),
+  setLastUser: (username) => db.setLastUser(username),
 });
 
 contextBridge.exposeInMainWorld("clipboard", {
@@ -24,4 +26,8 @@ contextBridge.exposeInMainWorld("crypt", {
   encrypt: (text) => crypt.encrypt(text),
   decrypt: (text) => crypt.decrypt(text),
   sha256: (text) => crypt.sha256(text),
+});
+
+contextBridge.exposeInMainWorld("dialog", {
+  chooseImage: () => ipcRenderer.invoke("chooseImage"),
 });

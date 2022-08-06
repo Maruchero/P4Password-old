@@ -45,11 +45,10 @@ if (lastUser) {
   document.getElementById("password-input").focus();
   if (lastUser.image) {
     // set user image
-    userImage.style.backgroundImage = `url("/${lastUser.image.replace(
-      /\\/g,
-      "/"
-    )}")`;
-    // if user changes username clear the style
+    const imgPath = `${lastUser.image.replace(/\\/g, "/")}`
+    if (fs.exists(imgPath))
+      userImage.style.backgroundImage = `url("/${imgPath}")`;
+    // if user changes username reset the image
     usernameInput.addEventListener("input", () => {
       userImage.style = "";
     });

@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 
+const mode = "production";
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // eslint-disable-next-line global-require
 if (require("electron-squirrel-startup")) {
@@ -18,14 +20,15 @@ const createWindow = () => {
     icon: path.join(__dirname, "../img/icon.png"),
   });
 
-  mainWindow.setResizable(false);
-  mainWindow.setMenu(null);
+  if (mode === "production")
+    mainWindow.setMenu(null);
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools();
+  if (mode === "development")
+    mainWindow.webContents.openDevTools();
 };
 
 async function chooseImage() {

@@ -1,4 +1,5 @@
 const { contextBridge, clipboard, ipcRenderer } = require("electron");
+const fs = require("fs");
 const db = require("./db");
 const crypt = require("./crypt");
 
@@ -30,4 +31,8 @@ contextBridge.exposeInMainWorld("crypt", {
 
 contextBridge.exposeInMainWorld("dialog", {
   chooseImage: () => ipcRenderer.invoke("chooseImage"),
+});
+
+contextBridge.exposeInMainWorld("fs", {
+  exists: (path) => fs.existsSync(path),
 });

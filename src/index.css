@@ -32,6 +32,7 @@ section#dialogs {
 
 dialog {
   display: block;
+  margin: 0;
   border: 0;
   position: absolute;
   top: 50%;
@@ -113,7 +114,24 @@ dialog button.square-button {
   color: var(--color-error);
 }
 
-/* Login interface */
+#delete-password-dialog span {
+  font: var(--font-1);
+  font-size: 13px;
+  text-align: center;
+}
+
+#delete-password-dialog .button-bar {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#delete-password-dialog .button-bar button:first-child {
+  margin-right: 10px;
+}
+
+/********************************************
+ * Login interface
+ */
 section {
   width: 100%;
   height: 100%;
@@ -166,6 +184,7 @@ button {
 
   background: url("../img/default_user_image.png"), var(--palette-1);
   background-size: cover;
+  background-position: center;
   border-radius: 10px;
 }
 
@@ -216,49 +235,35 @@ button {
   box-shadow: 0px 4px 10px rgba(200, 227, 236, 0.5);
 }
 
-#passwords input:not(.password-container input) {
-  position: absolute;
-  left: 342px;
-  width: 370px;
-  color: #000;
-  font: var(--font-3);
-}
-
 #passwords input {
-  height: 34px;
+  min-height: 34px;
   background: #fcfcfc;
   font: var(--font-4);
 }
 
-#passwords label {
-  position: absolute;
-  width: 438px;
-  height: 19px;
-  left: 342px;
-  font: var(--font-1);
-  line-height: 15px;
-}
-
 #passwords .password-container {
   box-sizing: border-box;
-  width: 320px;
+  width: 40vw;
   height: 100%;
   padding: 20px;
+  padding-top: 31px;
 
   background: #f0f0f0;
   border-right: 2px solid #acc3d3;
+
+  display: flex;
+  flex-direction: column;
 }
 
 #passwords .password-container input {
-  width: 280px;
-  margin-top: 11px;
+  width: 100%;
 }
 
 #passwords #password-container {
   box-sizing: border-box;
 
-  width: 280px;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   margin-top: 30px;
   padding-top: 12px;
 
@@ -273,10 +278,9 @@ button {
   box-sizing: border-box;
   display: block;
   width: 100%;
-  padding-left: 10px;
-  height: 34px;
+  padding: 10px;
   font: var(--font-2);
-  line-height: 34px;
+  line-height: 100%;
   font-size: 14px;
   text-overflow: ellipsis;
   overflow-x: hidden;
@@ -294,10 +298,9 @@ button {
   position: absolute;
   box-sizing: border-box;
   padding: 10px 15px;
-  width: 460px;
-  height: 36px;
+  width: 60vw;
   top: 0;
-  left: 320px;
+  left: 40vw;
 }
 
 #passwords .button-bar button {
@@ -317,69 +320,60 @@ button {
   font: var(--font-2);
 }
 
+#passwords label {
+  position: absolute;
+  width: calc(60vw - 20px);
+  height: 19px;
+  left: calc(40vw + 15px);
+  font: var(--font-1);
+  line-height: 15px;
+}
+
+#passwords .output-container {
+  position: absolute;
+  box-sizing: border-box;
+  left: 40vw;
+  width: 60vw;
+  padding: 0 15px;
+  display: flex;
+  gap: 15px;
+}
+
+#passwords .output-container input {
+  width: 100%;
+  color: #000;
+  font: var(--font-3);
+}
+
+#passwords .output-container button  {
+  width: 34px;
+  height: 34px;
+}
+
 #passwords label[for="account-output"] {
   top: 75px;
 }
 
-#passwords #account-output {
+#passwords .output-container:nth-of-type(3) {
   top: 94px;
-}
-
-#passwords #account-output + button {
-  position: absolute;
-  top: 94px;
-  left: 730px;
-  width: 34px;
-  height: 34px;
 }
 
 #passwords label[for="username-output"] {
   top: 149px;
 }
 
-#passwords #username-output {
+#passwords .output-container:nth-of-type(4) {
   top: 168px;
-}
-
-#passwords #username-output + button {
-  position: absolute;
-  top: 168px;
-  left: 730px;
-  width: 34px;
-  height: 34px;
 }
 
 #passwords label[for="password-output"] {
   top: 223px;
 }
 
-#passwords #password-output {
+#passwords .output-container:nth-of-type(5) {
   top: 242px;
-}
-
-#passwords #password-output + button  {
-  position: absolute;
-  top: 242px;
-  left: 730px;
-  width: 34px;
-  height: 34px;
 }
 
 #passwords button:active {
   background: #999;
-}
-
-#delete-password-dialog span {
-  font: var(--font-1);
-  font-size: 13px;
-  text-align: center;
-}
-
-#delete-password-dialog .button-bar {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-#delete-password-dialog .button-bar button:first-child {
-  margin-right: 10px;
 }

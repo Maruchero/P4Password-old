@@ -1,4 +1,10 @@
-src/db.py
+# Development databases
+*.sqlite3
+*.sqlite
+*.db
+*.db3
+*.s3db
+*.sl3
 
 # Logs
 logs

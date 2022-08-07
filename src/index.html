@@ -34,7 +34,7 @@
         <div style="display: flex;">
           <input type="text" id="add-user-image-input" style="display: none">
           <button id="add-user-confirm-button" onclick="addUser()">Confirm</button>
-          <button class="square-button" style="margin-top: 15px" onclick="sod()"><i
+          <button class="square-button" style="margin-top: 15px" onclick="showOpenDialog(this)"><i
               class="fa-solid fa-image"></i></button>
         </div>
       </div>
@@ -100,7 +100,7 @@
       <label for="username-input">Username</label>
       <input type="text" id="username-input" autofocus>
       <label for="password-input">Password</label>
-      <input type="password" id="password-input">
+      <input type="password" id="password-input" onkeyup="if (event.key == 'Enter') login()">
       <label id="login-output"></label>
       <button id="login-button" onclick="login()">Login</button>
     </div>
@@ -108,7 +108,7 @@
 
   <section id="passwords">
     <div class="password-container">
-      <input type="search" placeholder="Search..." onkeyup="search(this.value)">
+      <input type="search" placeholder="Search..." oninput="search(this.value)" autofocus>
       <div id="password-container">
       </div>
     </div>

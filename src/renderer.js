@@ -45,7 +45,7 @@ if (lastUser) {
   document.getElementById("password-input").focus();
   if (lastUser.image) {
     // set user image
-    const imgPath = `${lastUser.image.replace(/\\/g, "/")}`
+    const imgPath = `${lastUser.image.replace(/\\/g, "/")}`;
     if (fs.exists(imgPath))
       userImage.style.backgroundImage = `url("/${imgPath}")`;
     // if user changes username reset the image
@@ -127,9 +127,10 @@ async function addUser() {
   }, 1000);
 }
 
-async function sod() {
+async function showOpenDialog(element) {
   const path = await dialog.chooseImage();
   document.getElementById("add-user-image-input").value = path;
+  element.backgroundColor = "var(--color-success)";
 }
 
 /******************************************
@@ -179,18 +180,20 @@ async function login() {
  */
 function generatePassword() {
   const chars =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#!$%&/()=?*+-_.:,;<>";
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#!$%&/()*+-_:;";
   let password = "";
   for (var i = 0; i < 16; i++) {
     password += chars[Math.floor(Math.random() * chars.length)];
   }
+  // copy password to clipboard
+  copyToClipboard(password);
   return password;
 }
 
 const passwordSpans = [];
 let activeSpan = null;
 async function loadPasswords(user) {
-  // cllear previous status
+  // Clear previous status
   activeSpan = null;
   accountOutput.value = "";
   usernameOutput.value = "";
@@ -200,6 +203,10 @@ async function loadPasswords(user) {
   editPasswordPassword.value = "";
   deletePasswordName.innerHTML = "";
   passwordContainer.innerHTML = "";
+
+  // Set focus on searchbar
+  console.log(d = document.querySelector("input[type='search']"));
+  //document.querySelector("input[type='search']").focus();
 
   // Load passwords
   const passwords = db.getPasswords(user);

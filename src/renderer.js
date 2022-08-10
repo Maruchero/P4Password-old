@@ -46,11 +46,14 @@ if (lastUser) {
   if (lastUser.image) {
     // set user image
     const imgPath = `${lastUser.image.replace(/\\/g, "/")}`;
-    if (fs.exists(imgPath))
+    if (fs.exists(imgPath)) {
       userImage.style.backgroundImage = `url("/${imgPath}")`;
+      loginSection.style.setProperty('--bg-image', `url("/${imgPath}")`);
+    }
     // if user changes username reset the image
     usernameInput.addEventListener("input", () => {
       userImage.style = "";
+      loginSection.style.setProperty('--opacity', "0");
     });
   }
 }

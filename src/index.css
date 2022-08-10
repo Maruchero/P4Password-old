@@ -149,6 +149,21 @@ section {
 
 #login {
   transition: opacity 0.5s;
+  background: #fff7;
+}
+
+#login::before {
+  content: '';
+  position: absolute;
+  z-index: -100;
+  width: 100%;
+  height: 100%;
+  filter: blur(5px);
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  opacity: var(--opacity);
+  transition: opacity 0.5s;
 }
 
 #login * {

@@ -35,7 +35,7 @@ async function chooseImage() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     title: "Select an image",
     properties: ["openFile"],
-    filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "gif"] }],
+    filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "gif", "webp"] }],
   });
   if (canceled) {
     return;

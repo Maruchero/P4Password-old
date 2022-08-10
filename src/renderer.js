@@ -48,12 +48,12 @@ if (lastUser) {
     const imgPath = `${lastUser.image.replace(/\\/g, "/")}`;
     if (fs.exists(imgPath)) {
       userImage.style.backgroundImage = `url("/${imgPath}")`;
-      loginSection.style.setProperty('--bg-image', `url("/${imgPath}")`);
+      loginSection.style.setProperty("--bg-image", `url("/${imgPath}")`);
     }
     // if user changes username reset the image
     usernameInput.addEventListener("input", () => {
       userImage.style = "";
-      loginSection.style.setProperty('--opacity', "0");
+      loginSection.style.setProperty("--opacity", "0");
     });
   }
 }
@@ -88,11 +88,15 @@ function closeDialogs() {
 async function addUser() {
   const username = document.getElementById("add-user-username-input").value;
   const password = document.getElementById("add-user-password-input").value;
-  const image = document.getElementById("add-user-image-input").value;
   const confirm = document.getElementById("add-user-confirm-input").value;
+  const image = document.getElementById("add-user-image-input").value;
 
   if (username.length === 0) {
     addUserOutput.innerHTML = "Please enter a username";
+    return;
+  }
+  if (db.getUser(username)) {
+    addUserOutput.innerHTML = "User already exists";
     return;
   }
   if (password.length === 0) {
@@ -101,10 +105,6 @@ async function addUser() {
   }
   if (password !== confirm) {
     addUserOutput.innerHTML = "Passwords do not match";
-    return;
-  }
-  if (db.getUser(username)) {
-    addUserOutput.innerHTML = "User already exists";
     return;
   }
 
@@ -132,8 +132,10 @@ async function addUser() {
 
 async function showOpenDialog(element) {
   const path = await dialog.chooseImage();
-  document.getElementById("add-user-image-input").value = path;
-  element.backgroundColor = "var(--color-success)";
+  if (path) {
+    document.getElementById("add-user-image-input").value = path;
+    element.style.backgroundColor = "rgb(170, 230, 170)";
+  }
 }
 
 /******************************************
@@ -162,19 +164,15 @@ async function login() {
   // Load passwords
   db.setLastUser(username);
   crypt.generateKey(password).then(() => {
-    loadPasswords(username);
-
     // Login user
     activeUser = username;
     loginOutput.style.color = "var(--color-success)";
     loginOutput.innerHTML = "Login successful";
 
-    passwordSection.style = "left: 0; display: block;";
-    loginSection.style = "opacity: .5";
+    passwordSection.style = "animation: slide-left .5s ease-in-out forwards; display: block";
+    loginSection.style = "filter: brightness(.8)";
 
-    setTimeout(() => {
-      loginOutput.style = "";
-    }, 500);
+    loadPasswords(username);
   });
 }
 
@@ -189,7 +187,7 @@ function generatePassword() {
     password += chars[Math.floor(Math.random() * chars.length)];
   }
   // copy password to clipboard
-  copyToClipboard(password);
+  clipboard.copy(password);
   return password;
 }
 
@@ -208,8 +206,7 @@ async function loadPasswords(user) {
   passwordContainer.innerHTML = "";
 
   // Set focus on searchbar
-  console.log(d = document.querySelector("input[type='search']"));
-  //document.querySelector("input[type='search']").focus();
+  document.querySelector("input[type='search']").focus({ preventScroll: true });
 
   // Load passwords
   const passwords = db.getPasswords(user);

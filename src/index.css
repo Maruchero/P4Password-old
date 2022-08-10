@@ -149,7 +149,7 @@ section {
 
 #login {
   transition: opacity 0.5s;
-  background: #fff7;
+  background: #fffa;
 }
 
 #login::before {
@@ -240,6 +240,15 @@ button {
   top: 0;
   left: 100%;
   transition: left 0.5s ease-in-out;
+}
+
+@keyframes slide-left {
+  0% {
+    left: 100%;
+  }
+  100% {
+    left: 0;
+  }
 }
 
 #passwords button,

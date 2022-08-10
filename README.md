@@ -1,10 +1,17 @@
-# P4Password
+<div style="display: flex; align-items: center;">
+    <img src="img/icon.ico">
+    <span style="margin-left: 5px;font-size: 2em;">P4Password</span>
+</div>
+
+***
+
+![]()
 
 ![Language](https://img.shields.io/badge/test-passing-a)
 ![Language](https://img.shields.io/badge/security-passing-a)
 ![Language](https://img.shields.io/badge/framework-Electron-blue)
 ![Language](https://img.shields.io/badge/author-Maruchero-blue)
-![Language](https://img.shields.io/badge/version-1.0.1-lightgray)
+![Language](https://img.shields.io/badge/version-1.0.2-lightgray)
 
 ## Description
 

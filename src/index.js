@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 
-const mode = "production";
+const production = true;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // eslint-disable-next-line global-require
@@ -20,14 +20,14 @@ const createWindow = () => {
     icon: path.join(__dirname, "../img/icon.png"),
   });
 
-  if (mode === "production")
+  if (production)
     mainWindow.setMenu(null);
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
   // Open the DevTools.
-  if (mode === "development")
+  if (!production)
     mainWindow.webContents.openDevTools();
 };
 

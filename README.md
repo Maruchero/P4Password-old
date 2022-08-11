@@ -1,11 +1,6 @@
-<div style="display: flex; align-items: center;">
-    <img src="img/icon.ico">
-    <span style="margin-left: 5px;font-size: 2em;">P4Password</span>
-</div>
+# P4Password
 
-***
-
-![]()
+![](img/icon.ico)
 
 ![Language](https://img.shields.io/badge/test-passing-a)
 ![Language](https://img.shields.io/badge/security-passing-a)

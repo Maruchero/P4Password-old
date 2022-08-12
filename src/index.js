@@ -1,14 +1,11 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { autoUpdater } = require("electron-updater");
 const path = require("path");
 
 const production = true;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // eslint-disable-next-line global-require
-if (require("electron-squirrel-startup")) {
-  app.quit();
-}
-
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -35,7 +32,7 @@ async function chooseImage() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     title: "Select an image",
     properties: ["openFile"],
-    filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "gif", "webp"] }],
+    filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "gif", "webp", "svg"] }],
   });
   if (canceled) {
     return;
@@ -43,11 +40,17 @@ async function chooseImage() {
   return filePaths[0];
 }
 
+function checkUpdates() {
+  autoUpdater.checkForUpdatesAndNotify()
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   ipcMain.handle("chooseImage", chooseImage);
+
+  checkUpdates();
 
   createWindow();
 });

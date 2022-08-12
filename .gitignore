@@ -6,6 +6,9 @@
 *.s3db
 *.sl3
 
+# Out folders
+build/*
+
 # Logs
 logs
 *.log

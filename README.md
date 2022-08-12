@@ -6,7 +6,7 @@
 ![Language](https://img.shields.io/badge/security-passing-a)
 ![Language](https://img.shields.io/badge/framework-Electron-blue)
 ![Language](https://img.shields.io/badge/author-Maruchero-blue)
-![Language](https://img.shields.io/badge/version-1.0.2-lightgray)
+![Language](https://img.shields.io/badge/version-1.0.3-lightgray)
 
 ## Description
 
@@ -17,6 +17,7 @@ SImple and secure offline password saver. 😉
 - 👥 Multi-user
 - 🔑 Cryptography
 - ⚙️ Strong password generator
+- 🚀 Auto updating
 - 🤯 Idiot proof UI
 
 ![](img/README_cryptography.jpg)

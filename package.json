@@ -1,61 +1,59 @@
 {
   "name": "p4password",
-  "productName": "P4Password",
-  "version": "1.0.2",
-  "description": "Cool password saver in electron",
-  "main": "src/index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Under3nder/P4Password"
-  },
+  "version": "1.0.3",
+  "description": "P4Password",
+  "main": "./src/index.js",
   "scripts": {
     "start": "electron .",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test pack": ".\\build\\win-unpacked\\P4Password.exe",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
-  "keywords": [],
-  "author": {
-    "name": "Under3nder",
-    "email": "marce.gnz303@gmail.com"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Under3nder/P4Password/"
   },
-  "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "./img/icon.ico"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "platforms": [
-            "win32"
-          ],
-          "config": {
-            "name": "P4Password"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin",
-            "linux",
-            "win32"
-          ]
-        }
-      ]
+  "build": {
+    "publish": [{
+      "provider": "github",
+      "owner": "Maruchero",
+      "releaseType": "release"
+    }],
+    "icon": "img/big_icon.ico",
+    "productName": "P4Password",
+    "appId": "com.maruchero.P4Password",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "src",
+      "img",
+      "dist/electron/**/*",
+      "!*.db"
+    ],
+    "win": {
+      "icon": "img/icon.ico"
+    },
+    "mac": {
+      "icon": "img/icon.icns",
+      "category": "public.app-category.utilities"
+    },
+    "linux": {
+      "icon": "img/icon.ico",
+      "category": "Utility",
+      "target": "AppImage"
     }
   },
+  "keywords": ["Password", "Encryption", "Offline", "Security"],
+  "author": "Maruchero",
+  "license": "MIT",
   "dependencies": {
-    "better-sqlite3": "^7.6.2"
+    "better-sqlite3": "^7.6.2",
+    "electron-updater": "^5.2.1"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.64",
-    "@electron-forge/maker-deb": "^6.0.0-beta.64",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.64",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.64",
-    "@electron-forge/maker-zip": "^6.0.0-beta.64",
-    "electron": "19.0.10"
+    "electron": "^19.0.10",
+    "electron-builder": "^23.3.3"
   }
 }

@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const path = require("path");
 
-const production = false;
+const production = true;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // eslint-disable-next-line global-require
@@ -11,7 +11,7 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    show: false,
+    show: !production,
     icon: path.join(__dirname, "../img/icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),

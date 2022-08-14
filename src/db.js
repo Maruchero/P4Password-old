@@ -1,6 +1,11 @@
 const sqlite = require("better-sqlite3");
+const fs = require("fs");
 
-const db = new sqlite("./P4Password.db");
+if (!fs.existsSync(`${process.env.APPDATA}/P4Password/db/`)) {
+  fs.mkdirSync(`${process.env.APPDATA}/P4Password/db/`);
+}
+
+const db = new sqlite(`${process.env.APPDATA}/P4Password/db/P4Password.db`);
 // get all database tables
 try {
   db.prepare("SELECT * FROM app_data").all();

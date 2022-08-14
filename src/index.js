@@ -1,8 +1,9 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const path = require("path");
+require('dotenv').config();
 
-const production = true;
+const production = process.env.PRODUCTION ?? true;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // eslint-disable-next-line global-require

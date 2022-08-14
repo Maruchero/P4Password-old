@@ -131,7 +131,7 @@ async function addUser() {
 }
 
 async function showOpenDialog(element) {
-  const path = await dialog.chooseImage();
+  const path = await renderEvents.chooseImageDialog();
   if (path) {
     document.getElementById("add-user-image-input").value = path;
     element.style.backgroundColor = "rgb(170, 230, 170)";
@@ -424,3 +424,10 @@ async function deletePassword() {
     }, 300);
   }, 1000);
 }
+
+/******************************************
+ * Events
+ */
+window.onload = () => {
+  renderEvents.finishedLoading();
+};

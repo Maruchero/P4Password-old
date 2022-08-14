@@ -1,7 +1,8 @@
 {
   "name": "p4password",
-  "version": "1.0.3",
-  "description": "P4Password",
+  "productName": "P4Password",
+  "version": "1.0.4",
+  "description": "Cool offline password saver",
   "main": "./src/index.js",
   "scripts": {
     "start": "electron .",
@@ -17,7 +18,7 @@
   "build": {
     "publish": [{
       "provider": "github",
-      "owner": "Maruchero",
+      "owner": "Under3nder",
       "releaseType": "release"
     }],
     "icon": "img/big_icon.ico",
@@ -29,8 +30,7 @@
     "files": [
       "src",
       "img",
-      "dist/electron/**/*",
-      "!*.db"
+      "dist/electron/**/*"
     ],
     "win": {
       "icon": "img/icon.ico"

@@ -3,7 +3,7 @@ const fs = require("fs");
 const db = require("./db");
 const crypt = require("./crypt");
 
-// make db accessible from renderer
+// db => database functions
 contextBridge.exposeInMainWorld("db", {
   getUser: (username) => db.getUser(username),
   addUser: (username, password, image) => db.addUser(username, password, image),
@@ -18,10 +18,12 @@ contextBridge.exposeInMainWorld("db", {
   setLastUser: (username) => db.setLastUser(username),
 });
 
+// clipboard => copy to clipboard
 contextBridge.exposeInMainWorld("clipboard", {
   copy: (text) => clipboard.writeText(text),
 });
 
+// crypt => encryption and decryption functions + hash
 contextBridge.exposeInMainWorld("crypt", {
   generateKey: (base) => crypt.generateKey(base),
   encrypt: (text) => crypt.encrypt(text),
@@ -29,10 +31,13 @@ contextBridge.exposeInMainWorld("crypt", {
   sha256: (text) => crypt.sha256(text),
 });
 
-contextBridge.exposeInMainWorld("dialog", {
-  chooseImage: () => ipcRenderer.invoke("chooseImage"),
+// renderEvents => events sent to main process
+contextBridge.exposeInMainWorld("renderEvents", {
+  chooseImageDialog: () => ipcRenderer.invoke("chooseImage"),
+  finishedLoading: () => ipcRenderer.send("DOM-loaded"),
 });
 
+// fs => file system functions
 contextBridge.exposeInMainWorld("fs", {
   exists: (path) => fs.existsSync(path),
 });

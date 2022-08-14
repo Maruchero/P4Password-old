@@ -6,8 +6,8 @@
 *.s3db
 *.sl3
 
-# Out folders
-build/*
+# Electron-builder
+build/
 
 # Logs
 logs
@@ -95,6 +95,3 @@ typings/
 
 # Webpack
 .webpack/
-
-# Electron-Forge
-out/

@@ -11,28 +11,38 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    show: false,
+    icon: path.join(__dirname, "../img/icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
-    icon: path.join(__dirname, "../img/icon.png"),
   });
-
-  if (production)
-    mainWindow.setMenu(null);
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
-  // Open the DevTools.
-  if (!production)
-    mainWindow.webContents.openDevTools();
+  // Show the window only when it has finished loading
+  ipcMain.on("DOM-loaded", () => {
+    mainWindow.show();
+    mainWindow.focus();
+  });
+
+  // Disable/Enable `Ctrl+R` shortcut for reloading the page
+  if (production) mainWindow.setMenu(null);
+  // Open/Don't open the DevTools
+  if (!production) mainWindow.webContents.openDevTools();
 };
 
 async function chooseImage() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     title: "Select an image",
     properties: ["openFile"],
-    filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg", "gif", "webp", "svg"] }],
+    filters: [
+      {
+        name: "Images",
+        extensions: ["png", "jpg", "jpeg", "gif", "webp", "svg"],
+      },
+    ],
   });
   if (canceled) {
     return;
@@ -41,7 +51,7 @@ async function chooseImage() {
 }
 
 function checkUpdates() {
-  autoUpdater.checkForUpdatesAndNotify()
+  autoUpdater.checkForUpdatesAndNotify();
 }
 
 // This method will be called when Electron has finished

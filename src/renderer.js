@@ -39,20 +39,23 @@ let lastUser = db.getUser(db.getLastUser().last_user);
 if (lastUser) {
   const usernameInput = document.getElementById("username-input");
   const userImage = document.getElementById("user-image");
+  const userImageSmall = document.getElementById("user-image-small");
   // set username
   usernameInput.value = lastUser.username;
   // set the focus on the password field
   document.getElementById("password-input").focus();
   if (lastUser.image) {
     // set user image
-    const imgPath = `${lastUser.image.replace(/\\/g, "/")}`;
+    const imgPath = lastUser.image.replace(/\\/g, "/");
     if (fs.exists(imgPath)) {
       userImage.style.backgroundImage = `url("/${imgPath}")`;
+      userImageSmall.style.backgroundImage = `url("/${imgPath}")`;
       loginSection.style.setProperty("--bg-image", `url("/${imgPath}")`);
     }
     // if user changes username reset the image
     usernameInput.addEventListener("input", () => {
       userImage.style = "";
+      userImageSmall.style = "";
       loginSection.style.setProperty("--opacity", "0");
     });
   }
@@ -80,6 +83,24 @@ function closeDialogs() {
   setTimeout(() => {
     dialogSection.style.zIndex = "initial";
   }, 300);
+}
+
+/******************************************
+ * Dropdown
+ */
+function toggleDropdown(dropdown) {
+  const dropdownContent = dropdown.querySelector(".dropdown-content");
+  let height = 0;
+
+  const opened = dropdownContent.offsetHeight > 0;
+  if (!opened) {
+    const children = dropdownContent.querySelector(".container").children;
+    for (let i = 0; i < children.length; i++) {
+      height += children[i].offsetHeight + 5;
+    }
+    height += 25;
+  }
+  dropdownContent.style.maxHeight = `${height}px`;
 }
 
 /******************************************
@@ -161,15 +182,25 @@ async function login() {
     return;
   }
 
-  // Load passwords
   db.setLastUser(username);
+
+  const userImageSmall = document.getElementById("user-image-small");
+  lastUser = db.getUser(db.getLastUser().last_user);
+  if (lastUser.image) {
+    const imgPath = lastUser.image.replace(/\\/g, "/");
+    if (fs.exists(imgPath))
+      userImageSmall.style.backgroundImage = `url("/${imgPath}")`;
+  }
+
+  // Load passwords
   crypt.generateKey(password).then(() => {
     // Login user
     activeUser = username;
     loginOutput.style.color = "var(--color-success)";
     loginOutput.innerHTML = "Login successful";
 
-    passwordSection.style = "animation: slide-left .5s ease-in-out forwards; display: block";
+    passwordSection.style =
+      "animation: slide-left .5s ease-in-out forwards; display: block";
     loginSection.style = "filter: brightness(.8)";
 
     loadPasswords(username);

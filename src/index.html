@@ -92,7 +92,10 @@
     </dialog>
   </section>
 
-  <!-- Shown UI -->
+  <!------------------------------------------------------------
+    Shown UI
+  ------------------------------------------------------------->
+  <!-- Login Section -->
   <section id="login">
     <button id="add-user-button" onclick="openDialog('add-user-dialog')">Add User</button>
     <div class="center">
@@ -106,6 +109,7 @@
     </div>
   </section>
 
+  <!-- Passwords section -->
   <section id="passwords">
     <div class="password-container">
       <input type="search" placeholder="Search..." oninput="search(this.value)" autofocus>
@@ -118,7 +122,15 @@
           class="fa-solid fa-pen"></i></button>
       <button disabled title="Delete" onclick="openDialog('delete-password-dialog')"><i
           class="fa-solid fa-trash"></i></button>
-      <button onclick="logOut()">Log Out</button>
+      <div class="user-options dropdown" onclick="toggleDropdown(this)">
+        <span class="image" id="user-image-small"></span>
+        <div class="dropdown-content" onclick="event.stopPropagation()">
+          <div class="container">
+            <span><i class="fa-solid fa-gear"></i>Settings</span>
+            <span onclick="logOut()"><i class="fa-solid fa-right-from-bracket"></i>Logout</span>
+          </div>
+        </div>
+      </div>
     </div>
     <label for="account-output">Account</label>
     <div class="output-container">

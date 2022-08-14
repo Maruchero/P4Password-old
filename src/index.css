@@ -1,5 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa&family=Lato&family=Open+Sans&family=Poppins&family=Quicksand:wght@600&family=Roboto:ital@1&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa&family=Lato&family=Open+Sans&family=Poppins&family=Quicksand:wght@600&family=Roboto:ital@1&display=swap");
 
 :root {
   --palette-1: #f0f0f0;
@@ -85,11 +84,13 @@ dialog input {
   background: var(--palette-1);
 }
 
-#add-password-dialog input, #edit-password-dialog input {
+#add-password-dialog input,
+#edit-password-dialog input {
   font: var(--font-3);
 }
 
-#add-password-password-input , #edit-password-password-input {
+#add-password-password-input,
+#edit-password-password-input {
   width: 260px;
 }
 
@@ -153,7 +154,7 @@ section {
 }
 
 #login::before {
-  content: '';
+  content: "";
   position: absolute;
   z-index: -100;
   width: 100%;
@@ -337,13 +338,6 @@ button {
   border: 2px solid #b0b0b0;
 }
 
-#passwords .button-bar button:last-child {
-  box-sizing: border-box;
-  width: 91px;
-  float: right;
-  font: var(--font-2);
-}
-
 #passwords label {
   position: absolute;
   width: calc(60vw - 20px);
@@ -369,7 +363,7 @@ button {
   font: var(--font-3);
 }
 
-#passwords .output-container button  {
+#passwords .output-container button {
   width: 34px;
   height: 34px;
 }
@@ -400,4 +394,70 @@ button {
 
 #passwords button:active {
   background: #999;
+}
+
+/***********************************************
+* Dropdown
+*/
+.dropdown {
+  display: flex;
+  align-items: center;
+  float: right;
+  font: var(--font-2);
+  position: relative;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.dropdown::before {
+  content: "";
+  display: block;
+  width: 0;
+  border-top: 8px solid #333;
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+}
+
+span.image {
+  display: block;
+  width: 34px;
+  aspect-ratio: 1;
+  background: url("../img/default_user_image.png"), var(--palette-1);
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+}
+
+.dropdown-content {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 1000;
+
+  max-height: 0;
+  overflow: hidden;
+
+  background: white;
+  box-shadow: 0 5px 5px #0001;
+  transition: max-height 0.3s;
+}
+
+.dropdown-content .container {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dropdown-content span {
+  display: block;
+  white-space: nowrap;
+}
+
+.dropdown-content span:hover {
+  background: whitesmoke;
+}
+
+.dropdown-content span i {
+  margin-right: 5px;
 }

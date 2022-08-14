@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const path = require("path");
 
-const production = true;
+const production = false;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // eslint-disable-next-line global-require

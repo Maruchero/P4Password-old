@@ -20,6 +20,7 @@
 <body>
   <!-- Dialogs -->
   <section id="dialogs" onclick="if (event.target === this) closeDialogs()">
+
     <!-- Add User-->
     <dialog id="add-user-dialog">
       <h1>Add User</h1>
@@ -39,6 +40,7 @@
         </div>
       </div>
     </dialog>
+
     <!-- Add password -->
     <dialog id="add-password-dialog">
       <h1>Add Password</h1>
@@ -58,6 +60,7 @@
         <button id="add-password-confirm-button" onclick="addPassword()">Confirm</button>
       </div>
     </dialog>
+
     <!-- Edit password -->
     <dialog id="edit-password-dialog">
       <h1>Edit Password</h1>
@@ -77,6 +80,7 @@
         <button id="edit-password-confirm-button" onclick="editPassword()">Confirm</button>
       </div>
     </dialog>
+
     <!-- Delete password -->
     <dialog id="delete-password-dialog">
       <h1>Delete Password</h1>
@@ -90,6 +94,7 @@
         </div>
       </div>
     </dialog>
+
     <!-- Settings -->
     <dialog id="settings-dialog">
       <h1>Settings</h1>
@@ -106,32 +111,16 @@
             <i class="fa-solid fa-info-circle"></i>
           </span>
         </div>
-        <div class="content">
-          <h2>Change password</h2>
-          <label for="change-password-password">Actual password</label>
-          <input id="change-password-password" type="password">
-          <label for="change-password-new-password">New password</label>
-          <input id="change-password-new-password" type="password">
-          <label for="change-password-repeat-new-password">Repeat new password</label>
-          <input id="change-password-repeat-new-password" type="password">
-          <div class="button-bar">
-            <label id="change-password-output"></label>
-            <button>Change password</button>
-          </div>
-          <h2>Change image</h2>
-          <div>
-            <span  id="user-image-preview"></span>
-            <button style="float: left;"><i class="fa-solid fa-image"></i> Change image</button>
-          </div>
-          <h2>Delete user</h2>
-          <button>Delete user</button>
-        </div>
+        <div class="content"></div>
       </div>
   </section>
+
+
 
   <!------------------------------------------------------------
     Shown UI
   ------------------------------------------------------------->
+
   <!-- Login Section -->
   <section id="login">
     <button id="add-user-button" onclick="openDialog('add-user-dialog')">Add User</button>

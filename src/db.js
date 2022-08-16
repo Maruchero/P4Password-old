@@ -45,6 +45,9 @@ try {
   db.prepare("INSERT INTO app_data VALUES(null)").run();
 }
 
+/*********************************************
+ * User Table
+ */
 function getUser(username) {
   return db.prepare("SELECT * FROM users WHERE username = ?").get(username);
 }
@@ -55,6 +58,28 @@ function addUser(username, password, image) {
   ).run(username, password, image);
 }
 
+function updateUser(username, password, image) {
+  if (password) {
+    db.prepare(
+      "UPDATE users SET password = ?, image = ? WHERE username = ?"
+    ).run(password, image, username);
+  } else {
+    db.prepare("UPDATE users SET image = ? WHERE username = ?").run(
+      image,
+      username
+    );
+  }
+}
+
+function deleteUser(username) {
+  db.prepare("DELETE FROM users WHERE username = ?").run(username);
+
+  db.prepare("DELETE FROM passwords WHERE user_owner = ?").run(username);
+}
+
+/*********************************************
+ * Password Table
+ */
 function getPasswords(username) {
   return db
     .prepare("SELECT * FROM passwords WHERE user_owner = ?")
@@ -79,6 +104,9 @@ function deletePassword(id, user_owner, name, username, password) {
   ).run(id, user_owner, name, username, password);
 }
 
+/*********************************************
+ * App Data Table
+ */
 function getLastUser() {
   return db.prepare("SELECT last_user FROM app_data").get();
 }
@@ -87,12 +115,18 @@ function setLastUser(username) {
   db.prepare("UPDATE app_data SET last_user = ?").run(username);
 }
 
-/* Exports */
+/*********************************************
+ * Exports
+ */
 exports.getUser = getUser;
 exports.addUser = addUser;
+exports.updateUser = updateUser;
+exports.deleteUser = deleteUser;
+
 exports.getPasswords = getPasswords;
 exports.addPassword = addPassword;
 exports.updatePassword = updatePassword;
 exports.deletePassword = deletePassword;
+
 exports.getLastUser = getLastUser;
 exports.setLastUser = setLastUser;

@@ -472,6 +472,7 @@ span.image {
   min-height: 400px;
   width: 50vw;
   height: 70vh;
+
   display: flex;
   flex-direction: column;
 }
@@ -479,6 +480,7 @@ span.image {
 #settings-dialog .interactivity {
   display: flex;
   height: 100%;
+  overflow: hidden;
 }
 
 #settings-dialog h1 {
@@ -560,6 +562,9 @@ span.image {
 
 #settings-dialog button {
   margin-top: 0;
+  min-height: 34px;
+  width: max-content;
+  padding: 0 10px;
 }
 
 #settings-dialog #user-image-preview {
@@ -569,10 +574,15 @@ span.image {
   float: left;
   margin-right: 10px;
 
+  overflow: hidden;
   border-radius: 5px;
   border: 2px solid var(--palette-2);
 
   background: url("../img/default_user_image.png"), var(--palette-1);
   background-size: cover;
   background-position: center;
+}
+
+#change-password-output {
+  color: var(--color-error);
 }

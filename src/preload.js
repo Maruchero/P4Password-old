@@ -7,6 +7,10 @@ const crypt = require("./crypt");
 contextBridge.exposeInMainWorld("db", {
   getUser: (username) => db.getUser(username),
   addUser: (username, password, image) => db.addUser(username, password, image),
+  updateUser: (username, image, password=null) =>
+    db.updateUser(username, password, image),
+  deleteUser: (username) => db.deleteUser(username),
+
   getPasswords: (username) => db.getPasswords(username),
   addPassword: (user_owner, name, username, password) =>
     db.addPassword(user_owner, name, username, password),
@@ -14,6 +18,7 @@ contextBridge.exposeInMainWorld("db", {
     db.updatePassword(id, user_owner, name, username, password),
   deletePassword: (id, user_owner, name, username, password) =>
     db.deletePassword(id, user_owner, name, username, password),
+
   getLastUser: () => db.getLastUser(),
   setLastUser: (username) => db.setLastUser(username),
 });

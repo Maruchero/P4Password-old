@@ -40,7 +40,6 @@ if (lastUser) {
   const usernameInput = document.getElementById("username-input");
   const userImage = document.getElementById("user-image");
   const userImageSmall = document.getElementById("user-image-small");
-  const userImagePreview = document.getElementById("user-image-preview");
   // set username
   usernameInput.value = lastUser.username;
   // set the focus on the password field
@@ -51,14 +50,12 @@ if (lastUser) {
     if (fs.exists(imgPath)) {
       userImage.style.backgroundImage = `url("/${imgPath}")`;
       userImageSmall.style.backgroundImage = `url("/${imgPath}")`;
-      userImagePreview.style.backgroundImage = `url("/${imgPath}")`;
       loginSection.style.setProperty("--bg-image", `url("/${imgPath}")`);
     }
     // if user changes username reset the image
     usernameInput.addEventListener("input", () => {
       userImage.style = "";
       userImageSmall.style = "";
-      userImagePreview.style = "";
       loginSection.style.setProperty("--opacity", "0");
     });
   }
@@ -94,7 +91,9 @@ function closeDialogs() {
  * Settings dialog
  */
 function setActiveCategory(category) {
-  const categories = document.querySelectorAll("#settings-dialog span.category");
+  const categories = document.querySelectorAll(
+    "#settings-dialog span.category"
+  );
   for (let i = 0; i < categories.length; i++) {
     categories[i].classList.remove("active");
   }
@@ -105,27 +104,104 @@ function setActiveCategory(category) {
   switch (category.dataset.category) {
     case "user-settings":
       content.innerHTML = `
-        <h2>Change password</h2>
-        <label for="change-password-password">Actual password</label>
-        <input id="change-password-password" type="password">
-        <label for="change-password-new-password">New password</label>
-        <input id="change-password-new-password" type="password">
-        <label for="change-password-repeat-new-password">Repeat new password</label>
-        <input id="change-password-repeat-new-password" type="password">
-        <div class="button-bar">
-          <label id="change-password-output"></label>
-          <button>Change password</button>
-        </div>
-        <h2>Change image</h2>
-        <button><i class="fa-solid fa-image"></i> Change image</button>
-        <h2>Delete user</h2>
-        <button>Delete user</button>
-      `;
+          <h2>Change password</h2>
+          <label for="change-password-password">Current password</label>
+          <input id="change-password-password" type="password">
+          <label for="change-password-new-password">New password</label>
+          <input id="change-password-new-password" type="password">
+          <label for="change-password-repeat-new-password">Repeat new password</label>
+          <input id="change-password-repeat-new-password" type="password">
+          <div class="button-bar">
+            <label id="change-password-output"></label>
+            <button onclick="changePassword()">Change password</button>
+          </div>
+          <h2>Change image</h2>
+          <div>
+            <span id="user-image-preview"></span>
+            <button onclick="showChangeImageDialog()" style="float: left;"><i class="fa-solid fa-image"></i> Change image</button>
+          </div>
+          <h2>Delete user</h2>
+          <button style="background: rgb(255, 101, 101); border-color: rgb(224, 74, 74);">Delete user</button>
+        `;
+
+      const user = db.getUser(activeUser);
+      user.image = user.image.replace(/\\/g, "/");
+      if (fs.exists(user.image))
+        document.getElementById(
+          "user-image-preview"
+        ).style.backgroundImage = `url("/${user.image}")`;
+      else document.getElementById("user-image-preview").style = "";
       break;
 
     default:
       content.innerHTML = "";
   }
+}
+
+async function showChangeImageDialog() {
+  const path = await renderEvents.chooseImageDialog();
+  if (path) {
+    db.updateUser(activeUser, path);
+    // Update images
+    imgPath = path.replace(/\\/g, "/");
+    if (fs.exists(imgPath)) {
+      document.getElementById(
+        "user-image-small"
+      ).style.backgroundImage = `url("/${imgPath}")`;
+      document.getElementById(
+        "user-image-preview"
+      ).style.backgroundImage = `url("/${imgPath}")`;
+    } else {
+      document.getElementById("user-image-small").style = "";
+      document.getElementById("user-image-preview").style = "";
+    }
+  }
+}
+
+async function changePassword() {
+  const changePasswordOutput = document.getElementById("change-password-output");
+
+  const password = document.getElementById("change-password-password").value;
+  const newPassword = document.getElementById(
+    "change-password-new-password"
+  ).value;
+  const confirm = document.getElementById(
+    "change-password-repeat-new-password"
+  ).value;
+
+  const user = db.getUser(activeUser);
+
+  console.log(changePasswordOutput);
+  if (user.password !== (await crypt.sha256(password))) {
+    changePasswordOutput.innerHTML = "Wrong password";
+    return;
+  }
+  if (newPassword.length === 0) {
+    changePasswordOutput.innerHTML = "Please enter a new password";
+    return;
+  }
+  if (newPassword !== confirm) {
+    changePasswordOutput.innerHTML = "Passwords do not match";
+    return;
+  }
+
+  // Add user to the database
+  try {
+    db.updateUser(user.username, user.image, await crypt.sha256(newPassword));
+    changePasswordOutput.style.color = "var(--color-success)";
+    changePasswordOutput.innerHTML = "Password changed succesfully";
+  } catch (error) {
+    changePasswordOutput.innerHTML = "Something went wrong";
+  }
+
+  // Close the dialog
+  setTimeout(() => {
+    changePasswordOutput.style = "";
+    changePasswordOutput.innerHTML = "";
+    document.getElementById("change-password-password").value = "";
+    document.getElementById("change-password-new-password").value = "";
+    document.getElementById("change-password-repeat-new-password").value = "";
+ }, 2000);
 }
 
 /******************************************
@@ -176,7 +252,7 @@ async function addUser() {
   try {
     db.addUser(username, await crypt.sha256(password), image ? image : null);
     addUserOutput.style.color = "var(--color-success)";
-    addUserOutput.innerHTML = "User added sucesfully";
+    addUserOutput.innerHTML = "User added succesfully";
   } catch (error) {
     addUserOutput.innerHTML = "Something went wrong";
   }

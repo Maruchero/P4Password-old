@@ -67,6 +67,7 @@ if (lastUser) {
   const usernameInput = document.getElementById("username-input");
   const userImage = document.getElementById("user-image");
   const userImageSmall = document.getElementById("user-image-small");
+  const userImagePreview = document.getElementById("user-image-preview");
   // set username
   usernameInput.value = lastUser.username;
   // set the focus on the password field
@@ -77,12 +78,14 @@ if (lastUser) {
     if (fs.exists(imgPath)) {
       userImage.style.backgroundImage = `url("/${imgPath}")`;
       userImageSmall.style.backgroundImage = `url("/${imgPath}")`;
+      userImagePreview.style.backgroundImage = `url("/${imgPath}")`;
       loginSection.style.setProperty("--bg-image", `url("/${imgPath}")`);
     }
     // if user changes username reset the image
     usernameInput.addEventListener("input", () => {
       userImage.style = "";
       userImageSmall.style = "";
+      userImagePreview.style = "";
       loginSection.style.setProperty("--opacity", "0");
     });
   }
@@ -91,7 +94,7 @@ if (lastUser) {
 /****************************************
  * Dialog functions
  */
-function openDialog(id) {
+function openDialog(id, callback = null) {
   dialogSection.style.zIndex = "1000000";
 
   var dialog = document.getElementById(id);
@@ -99,6 +102,8 @@ function openDialog(id) {
     dialog.classList.add("active");
     dialogSection.classList.add("active");
   }
+
+  if (callback) callback();
 }
 
 function closeDialogs() {
@@ -110,6 +115,44 @@ function closeDialogs() {
   setTimeout(() => {
     dialogSection.style.zIndex = "initial";
   }, 300);
+}
+
+/******************************************
+ * Settings dialog
+ */
+function setActiveCategory(category) {
+  const categories = document.querySelectorAll("#settings-dialog span.category");
+  for (let i = 0; i < categories.length; i++) {
+    categories[i].classList.remove("active");
+  }
+  category.classList.add("active");
+
+  // set content
+  const content = document.querySelector("#settings-dialog .content");
+  switch (category.dataset.category) {
+    case "user-settings":
+      content.innerHTML = `
+        <h2>Change password</h2>
+        <label for="change-password-password">Actual password</label>
+        <input id="change-password-password" type="password">
+        <label for="change-password-new-password">New password</label>
+        <input id="change-password-new-password" type="password">
+        <label for="change-password-repeat-new-password">Repeat new password</label>
+        <input id="change-password-repeat-new-password" type="password">
+        <div class="button-bar">
+          <label id="change-password-output"></label>
+          <button>Change password</button>
+        </div>
+        <h2>Change image</h2>
+        <button><i class="fa-solid fa-image"></i> Change image</button>
+        <h2>Delete user</h2>
+        <button>Delete user</button>
+      `;
+      break;
+
+    default:
+      content.innerHTML = "";
+  }
 }
 
 /******************************************
@@ -178,7 +221,7 @@ async function addUser() {
   }, 1000);
 }
 
-async function showOpenDialog(element) {
+async function showChooseImageDialog(element) {
   const path = await renderEvents.chooseImageDialog();
   if (path) {
     document.getElementById("add-user-image-input").value = path;

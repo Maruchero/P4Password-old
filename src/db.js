@@ -1,6 +1,5 @@
 const sqlite = require("better-sqlite3");
 const fs = require("fs");
-require("./db_updater");
 
 let path;
 if (process.env.DATABASE_PATH) {
@@ -25,6 +24,7 @@ try {
 function getUser(id) {
   return db.prepare("SELECT * FROM users WHERE id = ? AND delete_time IS NULL").get(id);
 }
+
 function getUserByUsername(username) {
   return db.prepare("SELECT * FROM users WHERE username = ? AND delete_time IS NULL").get(username);
 }
@@ -33,6 +33,25 @@ function addUser(username, password, image) {
   db.prepare(
     "INSERT INTO users (username, password, image, theme) VALUES (?, ?, ?, ?)"
   ).run(username, password, image, 1);
+}
+
+function updateUser(username, password, image) {
+  if (password) {
+    db.prepare(
+      "UPDATE users SET password = ?, image = ? WHERE username = ?"
+    ).run(password, image, username);
+  } else {
+    db.prepare("UPDATE users SET image = ? WHERE username = ?").run(
+      image,
+      username
+    );
+  }
+}
+
+function deleteUser(username) {
+  db.prepare("DELETE FROM users WHERE username = ?").run(username);
+
+  db.prepare("DELETE FROM passwords WHERE user_owner = ?").run(username);
 }
 
 // password table
@@ -85,10 +104,14 @@ function getTheme(id) {
 exports.getUser = getUser;
 exports.getUserByUsername = getUserByUsername;
 exports.addUser = addUser;
+exports.updateUser = updateUser;
+exports.deleteUser = deleteUser;
+
 exports.getPasswords = getPasswords;
 exports.addPassword = addPassword;
 exports.updatePassword = updatePassword;
 exports.deletePassword = deletePassword;
+
 exports.getLastUser = getLastUser;
 exports.setLastUser = setLastUser;
 exports.getTheme = getTheme;

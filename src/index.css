@@ -13,7 +13,8 @@
   --font-2: 15px Open Sans, sans-serif;
   --font-3: 16px Quicksand, cursive, sans-serif;
   --font-4: 16px Lato, sans-serif;
-  --font-5: 18px Ubuntu, Lato, sans-serif;
+  --font-5: 18px Poppins, Lato, sans-serif;
+  --font-6: 600 17px Quicksand, cursive, sans-serif;
 }
 
 body {
@@ -435,6 +436,7 @@ span.image {
   z-index: 1000;
 
   max-height: 0;
+  border-radius: 5px;
   overflow: hidden;
 
   background: white;
@@ -460,4 +462,117 @@ span.image {
 
 .dropdown-content span i {
   margin-right: 5px;
+}
+
+/*********************************************************
+* Settings dialog
+*/
+#settings-dialog {
+  min-width: 550px;
+  min-height: 400px;
+  width: 50vw;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#settings-dialog .interactivity {
+  display: flex;
+  height: 100%;
+}
+
+#settings-dialog h1 {
+  margin-bottom: 20px;
+}
+
+#settings-dialog .categories {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  padding: 10px;
+  border-right: 1px solid #ccc;
+  width: max-content;
+  height: 100%;
+}
+
+.categories span.category {
+  display: block;
+  width: 40px;
+  aspect-ratio: 1;
+  border-radius: 7px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+
+  text-align: center;
+  line-height: 40px;
+  transition: box-shadow .3s linear;
+
+  cursor: pointer;
+}
+
+.categories span.category:hover {
+  box-shadow: 0 2px 5px #0004;
+}
+
+.categories span.category.active {
+  box-shadow: 0px 2px 6px rgb(145, 202, 221);
+}
+
+#settings-dialog .content {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 15px 25px;
+}
+
+#settings-dialog .content label,
+#settings-dialog .content input {
+  width: 100%;
+}
+
+#settings-dialog h2 {
+  font: var(--font-6);
+  color: #666;
+  border-bottom: 1px solid #bbb;
+  line-height: 150%;
+}
+
+#settings-dialog h2 {
+  margin-top: 30px;
+}
+
+#settings-dialog h2:first-child {
+  margin-top: 0;
+}
+
+#settings-dialog .button-bar {
+  display: flex;
+  justify-content: space-between;
+}
+
+#settings-dialog .button-bar label {
+  width: initial;
+}
+
+#settings-dialog button {
+  margin-top: 0;
+}
+
+#settings-dialog #user-image-preview {
+  width: 90px;
+  aspect-ratio: 1;
+
+  float: left;
+  margin-right: 10px;
+
+  border-radius: 5px;
+  border: 2px solid var(--palette-2);
+
+  background: url("../img/default_user_image.png"), var(--palette-1);
+  background-size: cover;
+  background-position: center;
 }

@@ -1,10 +1,25 @@
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa&family=Lato&family=Open+Sans&family=Poppins&family=Quicksand:wght@600&family=Roboto:ital@1&display=swap");
 
 :root {
-  --palette-1: #f0f0f0;
-  --palette-2: #acc3d3;
-  --palette-3: rgba(200, 227, 236, 0.5);
-  --palette-4: #c8e3ec;
+  --background: #fff;
+
+  --palette-1: #333;
+  --palette-2: #444;
+  --palette-3: #666;
+  --palette-4: #999;
+  --palette-5: #b0b0b0;
+  --palette-6: #f0f0f0;
+  --palette-7: #f5f5f5;
+  --palette-8: #fcfcfc;
+  --palette-9: #fff;
+
+  --palette-10: #0001;
+  --palette-11: rgba(0, 0, 0, 0.5);
+  --palette-12: #fffa;
+  --palette-13: rgba(200, 227, 236, 0.5);
+
+  --palette-14: #acc3d3;
+  --palette-15: #c8e3ec;
 
   --color-error: red;
   --color-success: #0c0;
@@ -20,6 +35,7 @@ body {
   margin: 0;
   height: 100vh;
   overflow-x: hidden;
+  background: var(--background);
 }
 
 /* Dialogs */
@@ -30,6 +46,7 @@ section#dialogs {
 }
 
 dialog {
+  background: var(--background);
   display: block;
   margin: 0;
   border: 0;
@@ -44,7 +61,7 @@ dialog {
 }
 
 section#dialogs.active {
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--palette-11);
 }
 
 dialog.active {
@@ -57,7 +74,7 @@ dialog * {
 
 dialog h1 {
   font: var(--font-5);
-  color: #666;
+  color: var(--palette-3);
   margin: 0;
 }
 
@@ -71,8 +88,8 @@ dialog label {
 
 dialog input {
   border-radius: 5px;
-  border: 2px solid var(--palette-2);
-  box-shadow: 0px 4px 20px var(--palette-3);
+  border: 2px solid var(--palette-14);
+  box-shadow: 0px 4px 20px var(--palette-13);
 
   width: 300px;
   height: 35px;
@@ -81,7 +98,7 @@ dialog input {
   font: var(--font-2);
   padding-left: 5px;
 
-  background: var(--palette-1);
+  background: var(--palette-6);
 }
 
 #add-password-dialog input,
@@ -98,8 +115,8 @@ dialog button {
   margin-top: 15px;
   width: 146px;
   border-radius: 5px;
-  border: 2px solid var(--palette-2);
-  box-shadow: 0px 4px 20px var(--palette-3);
+  border: 2px solid var(--palette-14);
+  box-shadow: 0px 4px 20px var(--palette-13);
 }
 
 dialog button.square-button {
@@ -107,8 +124,8 @@ dialog button.square-button {
   aspect-ratio: 1;
   margin-left: 5px;
   margin-top: 0;
-  color: #444;
-  background: var(--palette-1);
+  color: var(--palette-2);
+  background: var(--palette-6);
 }
 
 .dialog-output {
@@ -150,7 +167,7 @@ section {
 
 #login {
   transition: opacity 0.5s;
-  background: #fffa;
+  background: var(--palette-12);
 }
 
 #login::before {
@@ -173,14 +190,14 @@ section {
 }
 
 #login *:not(label, .center) {
-  border: 2px solid var(--palette-2);
-  box-shadow: 0px 4px 20px var(--palette-3);
+  border: 2px solid var(--palette-14);
+  box-shadow: 0px 4px 20px var(--palette-13);
 }
 
 button {
   height: 36px;
   font: var(--font-2);
-  background: var(--palette-4);
+  background: var(--palette-15);
   cursor: pointer;
 }
 
@@ -198,7 +215,7 @@ button {
   height: 200px;
   margin-bottom: 36px;
 
-  background: url("../img/default_user_image.png"), var(--palette-1);
+  background: url("../img/default_user_image.png"), var(--palette-6);
   background-size: cover;
   background-position: center;
   border-radius: 10px;
@@ -220,7 +237,7 @@ button {
   font: var(--font-2);
   padding-left: 5px;
 
-  background: var(--palette-1);
+  background: var(--palette-6);
 }
 
 #login-output {
@@ -237,7 +254,7 @@ button {
 #passwords {
   position: absolute;
   display: none;
-  background: #fff;
+  background: var(--palette-9);
   top: 0;
   left: 100%;
   transition: left 0.5s ease-in-out;
@@ -256,13 +273,13 @@ button {
 #passwords input {
   box-sizing: border-box;
   border-radius: 5px;
-  border: 2px solid #acc3d3;
-  box-shadow: 0px 4px 10px rgba(200, 227, 236, 0.5);
+  border: 2px solid var(--palette-14);
+  box-shadow: 0px 4px 10px var(--palette-13);
 }
 
 #passwords input {
   min-height: 34px;
-  background: #fcfcfc;
+  background: var(--palette-8);
   font: var(--font-4);
 }
 
@@ -273,8 +290,8 @@ button {
   padding: 20px;
   padding-top: 31px;
 
-  background: #f0f0f0;
-  border-right: 2px solid #acc3d3;
+  background: var(--palette-6);
+  border-right: 2px solid var(--palette-14);
 
   display: flex;
   flex-direction: column;
@@ -292,8 +309,8 @@ button {
   margin-top: 30px;
   padding-top: 12px;
 
-  background: #fcfcfc;
-  border: 2px solid #acc3d3;
+  background: var(--palette-8);
+  border: 2px solid var(--palette-14);
   border-radius: 5px;
 
   overflow-y: auto;
@@ -312,11 +329,11 @@ button {
 }
 
 #password-container span:hover {
-  background: whitesmoke;
+  background: var(--palette-7);
 }
 
 #password-container span.active {
-  background: var(--palette-4);
+  background: var(--palette-15);
 }
 
 #passwords .button-bar {
@@ -334,8 +351,8 @@ button {
 }
 
 #passwords .button-bar button:disabled {
-  background: #f0f0f0;
-  border: 2px solid #b0b0b0;
+  background: var(--palette-6);
+  border: 2px solid var(--palette-5);
 }
 
 #passwords label {
@@ -359,7 +376,6 @@ button {
 
 #passwords .output-container input {
   width: 100%;
-  color: #000;
   font: var(--font-3);
 }
 
@@ -393,7 +409,7 @@ button {
 }
 
 #passwords button:active {
-  background: #999;
+  background: var(--palette-4);
 }
 
 /***********************************************
@@ -413,7 +429,7 @@ button {
   content: "";
   display: block;
   width: 0;
-  border-top: 8px solid #333;
+  border-top: 8px solid var(--palette-1);
   border-right: 6px solid transparent;
   border-left: 6px solid transparent;
 }
@@ -422,7 +438,7 @@ span.image {
   display: block;
   width: 34px;
   aspect-ratio: 1;
-  background: url("../img/default_user_image.png"), var(--palette-1);
+  background: url("../img/default_user_image.png"), var(--palette-6);
   background-size: cover;
   background-position: center;
   border-radius: 50%;
@@ -437,8 +453,8 @@ span.image {
   max-height: 0;
   overflow: hidden;
 
-  background: white;
-  box-shadow: 0 5px 5px #0001;
+  background: var(--palette-9);
+  box-shadow: 0 5px 5px var(--palette-10);
   transition: max-height 0.3s;
 }
 
@@ -455,7 +471,7 @@ span.image {
 }
 
 .dropdown-content span:hover {
-  background: whitesmoke;
+  background: var(--palette-7);
 }
 
 .dropdown-content span i {

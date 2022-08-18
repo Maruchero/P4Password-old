@@ -3,7 +3,7 @@ const { autoUpdater } = require("electron-updater");
 const path = require("path");
 require('dotenv').config();
 
-const production = process.env.PRODUCTION ?? true;
+const production = process.env.PRODUCTION !== "false";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // eslint-disable-next-line global-require

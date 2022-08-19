@@ -3,6 +3,10 @@
 :root {
   --background: #fff;
 
+  --color: #000;
+  --button-color: #000;
+  --color-disabled: #000;
+
   --palette-1: #333;
   --palette-2: #444;
   --palette-3: #666;
@@ -12,14 +16,17 @@
   --palette-7: #f5f5f5;
   --palette-8: #fcfcfc;
   --palette-9: #fff;
+  --palette-10: #f0f0f0;
+  --palette-11: #f0f0f0;
+  --palette-12: #f0f0f0;
 
-  --palette-10: #0001;
-  --palette-11: rgba(0, 0, 0, 0.5);
-  --palette-12: #fffa;
-  --palette-13: rgba(200, 227, 236, 0.5);
+  --palette-13: #0001;
+  --palette-14: rgba(0, 0, 0, 0.5);
+  --palette-15: #fffa;
+  --palette-16: rgba(200, 227, 236, 0.5);
 
-  --palette-14: #acc3d3;
-  --palette-15: #c8e3ec;
+  --palette-17: #acc3d3;
+  --palette-18: #c8e3ec;
 
   --color-error: red;
   --color-success: #0c0;
@@ -36,6 +43,7 @@ body {
   height: 100vh;
   overflow-x: hidden;
   background: var(--background);
+  color: var(--color);
 }
 
 /* Dialogs */
@@ -61,7 +69,7 @@ dialog {
 }
 
 section#dialogs.active {
-  background: var(--palette-11);
+  background: var(--palette-14);
 }
 
 dialog.active {
@@ -82,19 +90,21 @@ dialog label {
   width: 300px;
   height: 19px;
 
+  color: var(--color);
   font: var(--font-1);
   line-height: 15px;
 }
 
 dialog input {
   border-radius: 5px;
-  border: 2px solid var(--palette-14);
-  box-shadow: 0px 4px 20px var(--palette-13);
+  border: 2px solid var(--palette-17);
+  box-shadow: 0px 4px 20px var(--palette-16);
 
   width: 300px;
   height: 35px;
   margin-bottom: 17px;
 
+  color: var(--color);
   font: var(--font-2);
   padding-left: 5px;
 
@@ -115,8 +125,8 @@ dialog button {
   margin-top: 15px;
   width: 146px;
   border-radius: 5px;
-  border: 2px solid var(--palette-14);
-  box-shadow: 0px 4px 20px var(--palette-13);
+  border: 2px solid var(--palette-17);
+  box-shadow: 0px 4px 20px var(--palette-16);
 }
 
 dialog button.square-button {
@@ -167,7 +177,7 @@ section {
 
 #login {
   transition: opacity 0.5s;
-  background: var(--palette-12);
+  background: var(--palette-15);
 }
 
 #login::before {
@@ -190,14 +200,15 @@ section {
 }
 
 #login *:not(label, .center) {
-  border: 2px solid var(--palette-14);
-  box-shadow: 0px 4px 20px var(--palette-13);
+  border: 2px solid var(--palette-17);
+  box-shadow: 0px 4px 20px var(--palette-16);
 }
 
 button {
   height: 36px;
+  color: var(--button-color);
   font: var(--font-2);
-  background: var(--palette-15);
+  background: var(--palette-18);
   cursor: pointer;
 }
 
@@ -234,10 +245,11 @@ button {
   height: 35px;
   margin-bottom: 17px;
 
+  color: inherit;
   font: var(--font-2);
   padding-left: 5px;
 
-  background: var(--palette-6);
+  background: var(--palette-12);
 }
 
 #login-output {
@@ -254,7 +266,7 @@ button {
 #passwords {
   position: absolute;
   display: none;
-  background: var(--palette-9);
+  background: var(--background);
   top: 0;
   left: 100%;
   transition: left 0.5s ease-in-out;
@@ -273,13 +285,14 @@ button {
 #passwords input {
   box-sizing: border-box;
   border-radius: 5px;
-  border: 2px solid var(--palette-14);
-  box-shadow: 0px 4px 10px var(--palette-13);
+  border: 2px solid var(--palette-17);
+  box-shadow: 0px 4px 10px var(--palette-16);
 }
 
 #passwords input {
   min-height: 34px;
   background: var(--palette-8);
+  color: var(--color);
   font: var(--font-4);
 }
 
@@ -290,8 +303,8 @@ button {
   padding: 20px;
   padding-top: 31px;
 
-  background: var(--palette-6);
-  border-right: 2px solid var(--palette-14);
+  background: var(--palette-10);
+  border-right: 2px solid var(--palette-17);
 
   display: flex;
   flex-direction: column;
@@ -310,7 +323,7 @@ button {
   padding-top: 12px;
 
   background: var(--palette-8);
-  border: 2px solid var(--palette-14);
+  border: 2px solid var(--palette-17);
   border-radius: 5px;
 
   overflow-y: auto;
@@ -333,7 +346,8 @@ button {
 }
 
 #password-container span.active {
-  background: var(--palette-15);
+  color: var(--button-color);
+  background: var(--palette-18);
 }
 
 #passwords .button-bar {
@@ -351,7 +365,8 @@ button {
 }
 
 #passwords .button-bar button:disabled {
-  background: var(--palette-6);
+  color: var(--color-disabled);
+  background: var(--palette-11);
   border: 2px solid var(--palette-5);
 }
 
@@ -360,6 +375,7 @@ button {
   width: calc(60vw - 20px);
   height: 19px;
   left: calc(40vw + 15px);
+  color: var(--color);
   font: var(--font-1);
   line-height: 15px;
 }
@@ -454,7 +470,7 @@ span.image {
   overflow: hidden;
 
   background: var(--palette-9);
-  box-shadow: 0 5px 5px var(--palette-10);
+  box-shadow: 0 5px 5px var(--palette-13);
   transition: max-height 0.3s;
 }
 

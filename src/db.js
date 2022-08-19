@@ -1,5 +1,6 @@
 const sqlite = require("better-sqlite3");
 const fs = require("fs");
+require("./db_updater");
 
 let path;
 if (process.env.DATABASE_PATH) {
@@ -16,33 +17,7 @@ const db = new sqlite(`${path}P4Password.db`);
 try {
   db.prepare("SELECT * FROM app_data").all();
 } catch (e) {
-  // create users table
-  db.prepare(
-    "CREATE TABLE users (" +
-      "username VARCHAR(255) PRIMARY KEY," +
-      "password VARCHAR(255) NOT NULL," +
-      "image VARCHAR(255)" +
-      ")"
-  ).run();
-  // create passwords table
-  db.prepare(
-    "CREATE TABLE passwords (" +
-      "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-      "user_owner NOT NULL," +
-      "name VARCHAR(255) NOT NULL," +
-      "username VARCHAR(255) NOT NULL," +
-      "password VARCHAR(255) NOT NULL," +
-      "FOREIGN KEY (user_owner) REFERENCES users(username)" +
-      ")"
-  ).run();
-  // create app_data table
-  db.prepare(
-    "CREATE TABLE app_data(" +
-      "last_user varchar(255), " +
-      "foreign key(last_user) references users(username)" +
-      ")"
-  ).run();
-  db.prepare("INSERT INTO app_data VALUES(null)").run();
+  console.error(e);
 }
 
 function getUser(username) {

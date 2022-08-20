@@ -37,6 +37,33 @@ const deletePasswordName = document.getElementById("delete-password-name");
  */
 let lastUser = db.getUser(db.getLastUser().last_user);
 if (lastUser) {
+  // Load theme
+  let root = document.querySelector(":root");
+  let theme = db.getTheme(lastUser.theme);
+  root.style.setProperty("--background", theme.background);
+  root.style.setProperty("--color", theme.text1);
+  root.style.setProperty("--button-color", theme.text2);
+  root.style.setProperty("--color-disabled", theme.text3);
+  root.style.setProperty("--palette-1", theme.color1);
+  root.style.setProperty("--palette-2", theme.color2);
+  root.style.setProperty("--palette-3", theme.color3);
+  root.style.setProperty("--palette-4", theme.color4);
+  root.style.setProperty("--palette-5", theme.color5);
+  root.style.setProperty("--palette-6", theme.color6);
+  root.style.setProperty("--palette-7", theme.color7);
+  root.style.setProperty("--palette-8", theme.color8);
+  root.style.setProperty("--palette-9", theme.color9);
+  root.style.setProperty("--palette-10", theme.color10);
+  root.style.setProperty("--palette-11", theme.color11);
+  root.style.setProperty("--palette-12", theme.color12);
+  root.style.setProperty("--palette-13", theme.color13);
+  root.style.setProperty("--palette-14", theme.color14);
+  root.style.setProperty("--palette-15", theme.color15);
+  root.style.setProperty("--palette-16", theme.color16);
+  root.style.setProperty("--palette-17", theme.color17);
+  root.style.setProperty("--palette-18", theme.color18);
+  console.log(root.style);
+  // Load image and username
   const usernameInput = document.getElementById("username-input");
   const userImage = document.getElementById("user-image");
   const userImageSmall = document.getElementById("user-image-small");

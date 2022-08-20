@@ -1,12 +1,12 @@
 # P4Password
 
-![](img/icon.ico)
+<img src="img/icon.ico" width=60 height=60>
 
 ![Language](https://img.shields.io/badge/test-passing-a)
 ![Language](https://img.shields.io/badge/security-passing-a)
 ![Language](https://img.shields.io/badge/framework-Electron-blue)
 ![Language](https://img.shields.io/badge/author-Maruchero-blue)
-![Language](https://img.shields.io/badge/version-2.1.0-lightgray)
+![Language](https://img.shields.io/badge/version-3.0.0-lightgray)
 
 ## Description
 
@@ -56,4 +56,4 @@ This app was built using the **Electron** framework, the same used to develop ap
 
 It uses a **sqlite** database stored on the device, the **users** table contains the usernames and the **sha 256** of the passwords, there is also the possibility to choose a profile image. The table **passwords** contains the credentials of the users. All credentials are encrypted using **AES-GCM** encrypting algorithm and a **different encryption key** for each user.
 
-I built this app for my personal use but I thought it could be useful for other people who have many passwords to remember but don't want to dave them online, so I decided to upload it on [Github](https://github.com/Under3nder/P4Password).
+I built this app for my personal use but I thought it could be useful for other people who have many passwords to remember but don't want to dave them online, so I decided to upload it on [Github](https://github.com/Maruchero/P4Password).

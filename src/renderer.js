@@ -176,13 +176,13 @@ async function login() {
   }
 
   // Check if user exists
-  const user = db.getUser(username);
+  const user = db.getUserByUsername(username);
   if (!user || user.password !== (await crypt.sha256(password))) {
     loginOutput.innerHTML = "Invalid username or password";
     return;
   }
 
-  db.setLastUser(username);
+  db.setLastUser(user.id);
 
   const userImageSmall = document.getElementById("user-image-small");
   lastUser = db.getUser(db.getLastUser().last_user);
@@ -195,7 +195,7 @@ async function login() {
   // Load passwords
   crypt.generateKey(password).then(() => {
     // Login user
-    activeUser = username;
+    activeUser = user.id;
     loginOutput.style.color = "var(--color-success)";
     loginOutput.innerHTML = "Login successful";
 
@@ -203,7 +203,7 @@ async function login() {
       "animation: slide-left .5s ease-in-out forwards; display: block";
     loginSection.style = "filter: brightness(.8)";
 
-    loadPasswords(username);
+    loadPasswords(user.id);
   });
 }
 
@@ -420,13 +420,7 @@ async function editPassword() {
 async function deletePassword() {
   // Delete password from the database
   try {
-    db.deletePassword(
-      activeSpan.dataset.id,
-      activeUser,
-      await crypt.encrypt(accountOutput.value),
-      await crypt.encrypt(usernameOutput.value),
-      await crypt.encrypt(passwordOutput.value)
-    );
+    db.deletePassword(activeSpan.dataset.id);
     deletePasswordOutput.style.color = "var(--color-success)";
     deletePasswordOutput.innerHTML = "Password deleted sucesfully";
   } catch (error) {

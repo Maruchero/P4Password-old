@@ -1,7 +1,7 @@
 {
   "name": "p4password",
   "productName": "P4Password",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Cool offline password saver",
   "main": "./src/index.js",
   "scripts": {
@@ -13,13 +13,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Under3nder/P4Password/"
+    "url": "https://github.com/Maruchero/P4Password/"
   },
   "build": {
     "publish": [
       {
         "provider": "github",
-        "owner": "Under3nder",
+        "owner": "Maruchero",
         "releaseType": "release"
       }
     ],

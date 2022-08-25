@@ -220,9 +220,9 @@ function updateDb(oldVersion) {
           "#f0f0f0",
           "#f0f0f0",
           "#0001",
-          "#rgba(0,0,0,0.5)",
+          "rgba(0,0,0,0.5)",
           "#fffa",
-          "#rgba(200, 227, 236, 0.5)",
+          "rgba(200, 227, 236, 0.5)",
           "#acc3d3",
           "#c8e3ec"
         );

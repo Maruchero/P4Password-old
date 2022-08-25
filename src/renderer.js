@@ -31,6 +31,7 @@ const editPasswordPassword = document.getElementById(
 );
 
 const deletePasswordName = document.getElementById("delete-password-name");
+const deleteUserName = document.getElementById("delete-user-name");
 
 /*****************************************
  * Load last user
@@ -62,7 +63,6 @@ if (lastUser) {
   root.style.setProperty("--palette-16", theme.color16);
   root.style.setProperty("--palette-17", theme.color17);
   root.style.setProperty("--palette-18", theme.color18);
-  console.log(root.style);
   // Load image and username
   const usernameInput = document.getElementById("username-input");
   const userImage = document.getElementById("user-image");
@@ -139,25 +139,30 @@ function setActiveCategory(category) {
           <label for="change-password-repeat-new-password">Repeat new password</label>
           <input id="change-password-repeat-new-password" type="password">
           <div class="button-bar">
-            <label id="change-password-output"></label>
+            <label id="change-password-output" class="dialog-output"></label>
             <button onclick="changePassword()">Change password</button>
           </div>
           <h2>Change image</h2>
           <div>
             <span id="user-image-preview"></span>
-            <button onclick="showChangeImageDialog()" style="float: left;"><i class="fa-solid fa-image"></i> Change image</button>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <button onclick="showChangeImageDialog()"><i class="fa-solid fa-image"></i> Change image</button>
+              <button onclick="setImage(null)"><i class="fa-solid fa-trash"></i> Remove image</button>
+            </div>
           </div>
           <h2>Delete user</h2>
-          <button style="background: rgb(255, 101, 101); border-color: rgb(224, 74, 74);">Delete user</button>
+          <button onclick="closeDialogs(); setTimeout(()=>{openDialog('delete-user-dialog')}, 300)" style="background: rgb(255, 101, 101); border-color: rgb(224, 74, 74);">Delete user</button>
         `;
 
       const user = db.getUser(activeUser);
-      user.image = user.image.replace(/\\/g, "/");
+      user.image = user.image ? user.image.replace(/\\/g, "/") : null;
       if (fs.exists(user.image))
         document.getElementById(
           "user-image-preview"
         ).style.backgroundImage = `url("/${user.image}")`;
       else document.getElementById("user-image-preview").style = "";
+
+      deleteUserName.innerHTML = user.username;
       break;
 
     default:
@@ -168,25 +173,31 @@ function setActiveCategory(category) {
 async function showChangeImageDialog() {
   const path = await renderEvents.chooseImageDialog();
   if (path) {
-    db.updateUser(activeUser, path);
-    // Update images
-    imgPath = path.replace(/\\/g, "/");
-    if (fs.exists(imgPath)) {
-      document.getElementById(
-        "user-image-small"
-      ).style.backgroundImage = `url("/${imgPath}")`;
-      document.getElementById(
-        "user-image-preview"
-      ).style.backgroundImage = `url("/${imgPath}")`;
-    } else {
-      document.getElementById("user-image-small").style = "";
-      document.getElementById("user-image-preview").style = "";
-    }
+    setImage(path);
+  }
+}
+
+function setImage(path) {
+  db.updateUserImage(activeUser, path);
+  // Update images
+  imgPath = path ? path.replace(/\\/g, "/") : null;
+  if (fs.exists(imgPath)) {
+    document.getElementById(
+      "user-image-small"
+    ).style.backgroundImage = `url("/${imgPath}")`;
+    document.getElementById(
+      "user-image-preview"
+    ).style.backgroundImage = `url("/${imgPath}")`;
+  } else {
+    document.getElementById("user-image-small").style = "";
+    document.getElementById("user-image-preview").style = "";
   }
 }
 
 async function changePassword() {
-  const changePasswordOutput = document.getElementById("change-password-output");
+  const changePasswordOutput = document.getElementById(
+    "change-password-output"
+  );
 
   const password = document.getElementById("change-password-password").value;
   const newPassword = document.getElementById(
@@ -198,12 +209,11 @@ async function changePassword() {
 
   const user = db.getUser(activeUser);
 
-  console.log(changePasswordOutput);
   if (user.password !== (await crypt.sha256(password))) {
     changePasswordOutput.innerHTML = "Wrong password";
     return;
   }
-  if (newPassword.length === 0) {
+  if (newPassword.length === 0 || newPassword === password) {
     changePasswordOutput.innerHTML = "Please enter a new password";
     return;
   }
@@ -212,12 +222,17 @@ async function changePassword() {
     return;
   }
 
-  // Add user to the database
+  // Change password
   try {
-    db.updateUser(user.username, user.image, await crypt.sha256(newPassword));
+    db.updateUserPassword(user.id, password, newPassword, async () => {
+      await crypt.generateKey(newPassword);
+      loadPasswords(user.id);
+    });
+    // Show success message
     changePasswordOutput.style.color = "var(--color-success)";
     changePasswordOutput.innerHTML = "Password changed succesfully";
-  } catch (error) {
+  } catch (e) {
+    console.error(e);
     changePasswordOutput.innerHTML = "Something went wrong";
   }
 
@@ -228,7 +243,23 @@ async function changePassword() {
     document.getElementById("change-password-password").value = "";
     document.getElementById("change-password-new-password").value = "";
     document.getElementById("change-password-repeat-new-password").value = "";
- }, 2000);
+  }, 2000);
+}
+
+function deleteUser() {
+  const out = document.getElementById("delete-user-output");
+  out.innerHTML = "asdfadfasdf";
+  try {
+    db.deleteUser(activeUser);
+    out.style.color = "var(--color-success)";
+    out.innerHTML = "User deleted succesfully";
+  } catch (e) {
+    console.error(e);
+    out.innerHTML = "Something went wrong";
+  }
+  setTimeout(() => {
+    window.location.reload();
+  }, 2000);
 }
 
 /******************************************
@@ -386,7 +417,7 @@ async function loadPasswords(user) {
   document.querySelector("input[type='search']").focus({ preventScroll: true });
 
   // Load passwords
-  const passwords = db.getPasswords(user);
+  const passwords = await db.getPasswords(user);
 
   for (let i = 0; i < passwords.length; i++) {
     const password = passwords[i];
@@ -527,7 +558,6 @@ async function editPassword() {
   try {
     db.updatePassword(
       activeSpan.dataset.id,
-      activeUser,
       await crypt.encrypt(name),
       await crypt.encrypt(username),
       await crypt.encrypt(password)

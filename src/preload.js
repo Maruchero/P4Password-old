@@ -8,9 +8,10 @@ contextBridge.exposeInMainWorld("db", {
   getUser: (id) => db.getUser(id),
   getUserByUsername: (username) => db.getUserByUsername(username),
   addUser: (username, password, image) => db.addUser(username, password, image),
-  updateUser: (username, image, password=null) =>
-    db.updateUser(username, password, image),
-  deleteUser: (username) => db.deleteUser(username),
+  updateUserPassword: (id, oldPassword, newPassword, callback) => db.updateUserPassword(id, oldPassword, newPassword, callback),
+  updateUserImage: (id, image) => db.updateUserImage(id, image),
+  updateUserTheme: (id, theme) => db.updateUserTheme(id, theme),
+  deleteUser: (id) => db.deleteUser(id),
 
   getPasswords: (username) => db.getPasswords(username),
   addPassword: (user_owner, name, username, password) =>

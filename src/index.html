@@ -87,7 +87,7 @@
       <div class="center">
         <img src="../img/alert.png" width="170" height="170">
         <span>Are you sure you want to delete password for <b id="delete-password-name"></b>?</span>
-        <label id="delete-password-output"></label>
+        <label id="delete-password-output" class="dialog-output"></label>
         <div class="button-bar">
           <button id="delete-password-confirm-button" onclick="deletePassword()">Confirm</button>
           <button id="delete-password-cancel-button" onclick="closeDialogs()">Cancel</button>
@@ -113,6 +113,25 @@
         </div>
         <div class="content"></div>
       </div>
+    </dialog>
+    
+
+    <!-- Delete user -->
+    <dialog id="delete-user-dialog">
+      <h1>Delete User</h1>
+      <div class="center">
+        <img src="../img/alert.png" width="170" height="170">
+        <span>
+          Are you sure you want to delete user <b id="delete-user-name"></b>?
+          All your password will be lost.
+        </span>
+        <label id="delete-user-output" class="dialog-output"></label>
+        <div class="button-bar">
+          <button id="delete-user-confirm-button" onclick="deleteUser()">Confirm</button>
+          <button id="delete-user-cancel-button" onclick="closeDialogs()">Cancel</button>
+        </div>
+      </div>
+    </dialog>
   </section>
 
 

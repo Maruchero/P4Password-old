@@ -1,5 +1,8 @@
 const sqlite = require("better-sqlite3");
 const fs = require("fs");
+const crypt = require("./crypt");
+
+require("./db_updater.js");
 
 let path;
 if (process.env.DATABASE_PATH) {
@@ -20,13 +23,44 @@ try {
   console.error(e);
 }
 
+// general functions
+function now() {
+  let date = new Date();
+  let month =
+    (date.getMonth() + 1).toString().length === 1
+      ? "0" + (date.getMonth() + 1)
+      : date.getMonth() + 1;
+  let day =
+    date.getDate().toString().length === 1
+      ? "0" + date.getDate()
+      : date.getDate();
+  let hour =
+    date.getHours().toString().length === 1
+      ? "0" + date.getHours()
+      : date.getHours();
+  let minute =
+    date.getMinutes().toString().length === 1
+      ? "0" + date.getMinutes()
+      : date.getMinutes();
+  let second =
+    date.getSeconds().toString().length === 1
+      ? "0" + date.getSeconds()
+      : date.getSeconds();
+
+  return `${date.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`;
+}
+
 // user table
 function getUser(id) {
-  return db.prepare("SELECT * FROM users WHERE id = ? AND delete_time IS NULL").get(id);
+  return db
+    .prepare("SELECT * FROM users WHERE id = ? AND delete_time IS NULL")
+    .get(id);
 }
 
 function getUserByUsername(username) {
-  return db.prepare("SELECT * FROM users WHERE username = ? AND delete_time IS NULL").get(username);
+  return db
+    .prepare("SELECT * FROM users WHERE username = ? AND delete_time IS NULL")
+    .get(username);
 }
 
 function addUser(username, password, image) {
@@ -35,29 +69,71 @@ function addUser(username, password, image) {
   ).run(username, password, image, 1);
 }
 
-function updateUser(username, password, image) {
-  if (password) {
-    db.prepare(
-      "UPDATE users SET password = ?, image = ? WHERE username = ?"
-    ).run(password, image, username);
-  } else {
-    db.prepare("UPDATE users SET image = ? WHERE username = ?").run(
-      image,
-      username
+async function updateUserPassword(id, oldPassword, password, callback = null) {
+  let passwords = db
+    .prepare("SELECT * FROM passwords WHERE user_owner = ?")
+    .all(id);
+
+  // decrypt passwords
+  await crypt.generateKey(oldPassword);
+  let decrypted = [];
+  for (let i = 0; i < passwords.length; i++) {
+    let p = {};
+    p.id = passwords[i].id;
+    p.user_owner = passwords[i].user_owner;
+    p.name = await crypt.decrypt(passwords[i].name);
+    p.username = await crypt.decrypt(passwords[i].username);
+    p.password = await crypt.decrypt(passwords[i].password);
+    p.delete_time = passwords[i].delete_time;
+    decrypted.push(p);
+  }
+
+  // re-encrypt all passwords
+  await crypt.generateKey(password);
+  for (let i = 0; i < decrypted.length; i++) {
+    updatePassword(
+      decrypted[i].id,
+      await crypt.encrypt(decrypted[i].name),
+      await crypt.encrypt(decrypted[i].username),
+      await crypt.encrypt(decrypted[i].password)
     );
+  }
+
+  // update user password
+  db.prepare("UPDATE users SET password = ? WHERE id = ?").run(await crypt.sha256(password), id);
+
+  if (callback) {
+    callback();
   }
 }
 
-function deleteUser(username) {
-  db.prepare("DELETE FROM users WHERE username = ?").run(username);
+function updateUserImage(id, image) {
+  db.prepare("UPDATE users SET image = ? WHERE id = ?").run(image, id);
+}
 
-  db.prepare("DELETE FROM passwords WHERE user_owner = ?").run(username);
+function updateUserTheme(id, theme) {
+  db.prepare("UPDATE users SET theme = ? WHERE id = ?").run(theme, id);
+}
+
+function deleteUser(id) {
+  let delete_time = now();
+  db.prepare("UPDATE users SET delete_time = ? WHERE id = ?").run(
+    delete_time,
+    id
+  );
+  // delete all passwords of the user
+  db.prepare("UPDATE passwords SET delete_time = ? WHERE user_owner = ?").run(
+    delete_time,
+    id
+  );
 }
 
 // password table
 function getPasswords(user_owner_id) {
   return db
-    .prepare("SELECT * FROM passwords WHERE user_owner = ? AND delete_time IS NULL")
+    .prepare(
+      "SELECT * FROM passwords WHERE user_owner = ? AND delete_time IS NULL"
+    )
     .all(user_owner_id);
 }
 
@@ -67,23 +143,17 @@ function addPassword(user_owner, name, username, password) {
   ).run(user_owner, name, username, password);
 }
 
-function updatePassword(id, user_owner, name, username, password) {
+function updatePassword(id, name, username, password) {
   db.prepare(
-    "UPDATE passwords SET user_owner = ?, name = ?, username = ?, password = ? WHERE id = ?"
-  ).run(user_owner, name, username, password, id);
+    "UPDATE passwords SET name = ?, username = ?, password = ? WHERE id = ? AND delete_time IS NULL"
+  ).run(name, username, password, id);
 }
 
 function deletePassword(id) {
-  let now = new Date();
-  let month = (now.getMonth() + 1).toString().length === 1 ? "0" + (now.getMonth() + 1) : now.getMonth() + 1;
-  let day = now.getDate().toString().length === 1 ? "0" + now.getDate() : now.getDate();
-  let hour = now.getHours().toString().length === 1 ? "0" + now.getHours() : now.getHours();
-  let minute = now.getMinutes().toString().length === 1 ? "0" + now.getMinutes() : now.getMinutes();
-  let second = now.getSeconds().toString().length === 1 ? "0" + now.getSeconds() : now.getSeconds();
-
-  db.prepare(
-    "UPDATE passwords SET delete_time = ? WHERE id = ?"
-  ).run(`${now.getFullYear()}-${month}-${day} ${hour}:${minute}:${second}`, id);
+  db.prepare("UPDATE passwords SET delete_time = ? WHERE id = ?").run(
+    now(),
+    id
+  );
 }
 
 // app_data table
@@ -104,7 +174,9 @@ function getTheme(id) {
 exports.getUser = getUser;
 exports.getUserByUsername = getUserByUsername;
 exports.addUser = addUser;
-exports.updateUser = updateUser;
+exports.updateUserPassword = updateUserPassword;
+exports.updateUserImage = updateUserImage;
+exports.updateUserTheme = updateUserTheme;
 exports.deleteUser = deleteUser;
 
 exports.getPasswords = getPasswords;

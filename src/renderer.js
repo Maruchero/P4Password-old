@@ -1,38 +1,5 @@
 let activeUser = null;
 
-/********************************************
- * DOM Elements
- */
-// Sections
-const dialogSection = document.getElementById("dialogs");
-const loginSection = document.getElementById("login");
-const passwordSection = document.getElementById("passwords");
-
-// Outputs (for example: User added succesfully)
-const loginOutput = document.getElementById("login-output");
-const addUserOutput = document.getElementById("add-user-output");
-const addPasswordOutput = document.getElementById("add-password-output");
-const editPasswordOutput = document.getElementById("edit-password-output");
-const deletePasswordOutput = document.getElementById("delete-password-output");
-
-// Passwords Section Elements
-const passwordContainer = document.getElementById("password-container");
-const accountOutput = document.getElementById("account-output");
-const usernameOutput = document.getElementById("username-output");
-const passwordOutput = document.getElementById("password-output");
-
-// Dialogs presetted fields
-const editPasswordName = document.getElementById("edit-password-name-input");
-const editPasswordUsername = document.getElementById(
-  "edit-password-username-input"
-);
-const editPasswordPassword = document.getElementById(
-  "edit-password-password-input"
-);
-
-const deletePasswordName = document.getElementById("delete-password-name");
-const deleteUserName = document.getElementById("delete-user-name");
-
 /*****************************************
  * Load last user
  */
@@ -64,26 +31,23 @@ if (lastUser) {
   root.style.setProperty("--palette-17", theme.color17);
   root.style.setProperty("--palette-18", theme.color18);
   // Load image and username
-  const usernameInput = document.getElementById("username-input");
-  const userImage = document.getElementById("user-image");
-  const userImageSmall = document.getElementById("user-image-small");
   // set username
-  usernameInput.value = lastUser.username;
+  loginSection.username.value = lastUser.username;
   // set the focus on the password field
   document.getElementById("password-input").focus();
   if (lastUser.image) {
     // set user image
     const imgPath = lastUser.image.replace(/\\/g, "/");
     if (fs.exists(imgPath)) {
-      userImage.style.backgroundImage = `url("/${imgPath}")`;
-      userImageSmall.style.backgroundImage = `url("/${imgPath}")`;
-      loginSection.style.setProperty("--bg-image", `url("/${imgPath}")`);
+      loginSection.userImage.style.backgroundImage = `url("/${imgPath}")`;
+      accountsSection.userImage.style.backgroundImage = `url("/${imgPath}")`;
+      loginSection._self.style.setProperty("--bg-image", `url("/${imgPath}")`);
     }
     // if user changes username reset the image
-    usernameInput.addEventListener("input", () => {
-      userImage.style = "";
-      userImageSmall.style = "";
-      loginSection.style.setProperty("--opacity", "0");
+    loginSection.username.addEventListener("input", () => {
+      loginSection.userImage.style = "";
+      accountsSection.userImage.style = "";
+      loginSection._self.style.setProperty("--opacity", "0");
     });
   }
 }
@@ -92,12 +56,12 @@ if (lastUser) {
  * Dialog functions
  */
 function openDialog(id, callback = null) {
-  dialogSection.style.zIndex = "1000000";
+  dialogsSection._self.style.zIndex = "1000";
 
   var dialog = document.getElementById(id);
   if (dialog) {
     dialog.classList.add("active");
-    dialogSection.classList.add("active");
+    dialogsSection._self.classList.add("active");
   }
 
   if (callback) callback();
@@ -107,10 +71,10 @@ function closeDialogs() {
   const dialogs = document.getElementsByTagName("dialog");
   for (var i = 0; i < dialogs.length; i++) {
     dialogs[i].classList.remove("active");
-    dialogSection.classList.remove("active");
+    dialogsSection._self.classList.remove("active");
   }
   setTimeout(() => {
-    dialogSection.style.zIndex = "initial";
+    dialogsSection._self.style.zIndex = "initial";
   }, 300);
 }
 
@@ -118,19 +82,15 @@ function closeDialogs() {
  * Settings dialog
  */
 function setActiveCategory(category) {
-  const categories = document.querySelectorAll(
-    "#settings-dialog span.category"
-  );
-  for (let i = 0; i < categories.length; i++) {
-    categories[i].classList.remove("active");
+  for (let i = 0; i < dialogsSection.settings.groups.length; i++) {
+    dialogsSection.settings.groups[i].classList.remove("active");
   }
   category.classList.add("active");
 
   // set content
-  const content = document.querySelector("#settings-dialog .content");
   switch (category.dataset.category) {
     case "user-settings":
-      content.innerHTML = `
+      dialogsSection.settings.context.innerHTML = `
           <h2>Change password</h2>
           <label for="change-password-password">Current password</label>
           <input id="change-password-password" type="password">
@@ -162,11 +122,11 @@ function setActiveCategory(category) {
         ).style.backgroundImage = `url("/${user.image}")`;
       else document.getElementById("user-image-preview").style = "";
 
-      deleteUserName.innerHTML = user.username;
+      dialogsSection.deleteUser.account.innerHTML = user.username;
       break;
 
     default:
-      content.innerHTML = "";
+      dialogsSection.settings.context.innerHTML = "";
   }
 }
 
@@ -182,14 +142,12 @@ function setImage(path) {
   // Update images
   imgPath = path ? path.replace(/\\/g, "/") : null;
   if (fs.exists(imgPath)) {
-    document.getElementById(
-      "user-image-small"
-    ).style.backgroundImage = `url("/${imgPath}")`;
+    accountsSection.userImage.style.backgroundImage = `url("/${imgPath}")`;
     document.getElementById(
       "user-image-preview"
     ).style.backgroundImage = `url("/${imgPath}")`;
   } else {
-    document.getElementById("user-image-small").style = "";
+    accountsSection.userImage.style = "";
     document.getElementById("user-image-preview").style = "";
   }
 }
@@ -213,8 +171,12 @@ async function changePassword() {
     changePasswordOutput.innerHTML = "Wrong password";
     return;
   }
-  if (newPassword.length === 0 || newPassword === password) {
+  if (newPassword.length === 0) {
     changePasswordOutput.innerHTML = "Please enter a new password";
+    return;
+  }
+  if (newPassword === password) {
+    changePasswordOutput.innerHTML = "Please enter a different password";
     return;
   }
   if (newPassword !== confirm) {
@@ -223,18 +185,18 @@ async function changePassword() {
   }
 
   // Change password
-  try {
-    db.updateUserPassword(user.id, password, newPassword, async () => {
+  db.updateUserPassword(user.id, password, newPassword)
+    .then(async () => {
       await crypt.generateKey(newPassword);
       loadPasswords(user.id);
+      // Show success message
+      changePasswordOutput.style.color = "var(--color-success)";
+      changePasswordOutput.innerHTML = "Password changed succesfully";
+    })
+    .catch((error) => {
+      console.error(error);
+      changePasswordOutput.innerHTML = "Something went wrong";
     });
-    // Show success message
-    changePasswordOutput.style.color = "var(--color-success)";
-    changePasswordOutput.innerHTML = "Password changed succesfully";
-  } catch (e) {
-    console.error(e);
-    changePasswordOutput.innerHTML = "Something went wrong";
-  }
 
   // Close the dialog
   setTimeout(() => {
@@ -248,7 +210,6 @@ async function changePassword() {
 
 function deleteUser() {
   const out = document.getElementById("delete-user-output");
-  out.innerHTML = "asdfadfasdf";
   try {
     db.deleteUser(activeUser);
     out.style.color = "var(--color-success)";
@@ -284,46 +245,47 @@ function toggleDropdown(dropdown) {
  * Add user dialog
  */
 async function addUser() {
-  const username = document.getElementById("add-user-username-input").value;
-  const password = document.getElementById("add-user-password-input").value;
-  const confirm = document.getElementById("add-user-confirm-input").value;
-  const image = document.getElementById("add-user-image-input").value;
+  const username = dialogsSection.addUser.username.value;
+  const password = dialogsSection.addUser.password.value;
+  const confirm = dialogsSection.addUser.confirm.value;
+  const image = dialogsSection.addUser.image.value;
 
   if (username.length === 0) {
-    addUserOutput.innerHTML = "Please enter a username";
+    dialogsSection.addUser.output.innerHTML = "Please enter a username";
     return;
   }
   if (db.getUser(username)) {
-    addUserOutput.innerHTML = "User already exists";
+    dialogsSection.addUser.output.innerHTML = "User already exists";
     return;
   }
   if (password.length === 0) {
-    addUserOutput.innerHTML = "Please enter a password";
+    dialogsSection.addUser.output.innerHTML = "Please enter a password";
     return;
   }
   if (password !== confirm) {
-    addUserOutput.innerHTML = "Passwords do not match";
+    dialogsSection.addUser.output.innerHTML = "Passwords do not match";
     return;
   }
 
   // Add user to the database
   try {
     db.addUser(username, await crypt.sha256(password), image ? image : null);
-    addUserOutput.style.color = "var(--color-success)";
-    addUserOutput.innerHTML = "User added succesfully";
+    dialogsSection.addUser.output.style.color = "var(--color-success)";
+    dialogsSection.addUser.output.innerHTML = "User added succesfully";
   } catch (error) {
-    addUserOutput.innerHTML = "Something went wrong";
+    dialogsSection.addUser.output.innerHTML = "Something went wrong";
   }
 
   // Close the dialog
   setTimeout(() => {
     closeDialogs();
     setTimeout(() => {
-      addUserOutput.style = "";
-      addUserOutput.innerHTML = "";
-      document.getElementById("add-user-username-input").value = "";
-      document.getElementById("add-user-password-input").value = "";
-      document.getElementById("add-user-confirm-input").value = "";
+      dialogsSection.addUser.output.style = "";
+      dialogsSection.addUser.output.innerHTML = "";
+      dialogsSection.addUser.username.value = "";
+      dialogsSection.addUser.password.value = "";
+      dialogsSection.addUser.confirm.value = "";
+      dialogsSection.addUser.image.value = "";
     }, 300);
   }, 1000);
 }
@@ -331,7 +293,7 @@ async function addUser() {
 async function showChooseImageDialog(element) {
   const path = await renderEvents.chooseImageDialog();
   if (path) {
-    document.getElementById("add-user-image-input").value = path;
+    dialogsSection.addUser.image.value = path;
     element.style.backgroundColor = "rgb(170, 230, 170)";
   }
 }
@@ -339,46 +301,45 @@ async function showChooseImageDialog(element) {
 /******************************************
  * Login section
  */
-async function login() {
-  const username = document.getElementById("username-input").value;
-  const password = document.getElementById("password-input").value;
+async function login_() {
+  const username = loginSection.username.value;
+  const password = loginSection.password.value;
 
   if (username.length === 0) {
-    loginOutput.innerHTML = "Please enter a username";
+    loginSection.output.innerHTML = "Please enter a username";
     return;
   }
   if (password.length === 0) {
-    loginOutput.innerHTML = "Please enter a password";
+    loginSection.output.innerHTML = "Please enter a password";
     return;
   }
 
   // Check if user exists
   const user = db.getUserByUsername(username);
   if (!user || user.password !== (await crypt.sha256(password))) {
-    loginOutput.innerHTML = "Invalid username or password";
+    loginSection.output.innerHTML = "Invalid username or password";
     return;
   }
 
   db.setLastUser(user.id);
 
-  const userImageSmall = document.getElementById("user-image-small");
   lastUser = db.getUser(db.getLastUser().last_user);
   if (lastUser.image) {
     const imgPath = lastUser.image.replace(/\\/g, "/");
     if (fs.exists(imgPath))
-      userImageSmall.style.backgroundImage = `url("/${imgPath}")`;
+      accountsSection.userImage.style.backgroundImage = `url("/${imgPath}")`;
   }
 
   // Load passwords
   crypt.generateKey(password).then(() => {
     // Login user
     activeUser = user.id;
-    loginOutput.style.color = "var(--color-success)";
-    loginOutput.innerHTML = "Login successful";
+    loginSection.output.style.color = "var(--color-success)";
+    loginSection.output.innerHTML = "Login successful";
 
-    passwordSection.style =
+    accountsSection._self.style =
       "animation: slide-left .5s ease-in-out forwards; display: block";
-    loginSection.style = "filter: brightness(.8)";
+    loginSection._self.style = "filter: brightness(.8)";
 
     loadPasswords(user.id);
   });
@@ -404,17 +365,17 @@ let activeSpan = null;
 async function loadPasswords(user) {
   // Clear previous status
   activeSpan = null;
-  accountOutput.value = "";
-  usernameOutput.value = "";
-  passwordOutput.value = "";
-  editPasswordName.value = "";
-  editPasswordUsername.value = "";
-  editPasswordPassword.value = "";
-  deletePasswordName.innerHTML = "";
-  passwordContainer.innerHTML = "";
+  accountsSection.accountOutput.value = "";
+  accountsSection.usernameOutput.value = "";
+  accountsSection.passwordOutput.value = "";
+  dialogsSection.changePassword.account.value = "";
+  dialogsSection.changePassword.username.value = "";
+  dialogsSection.changePassword.password.value = "";
+  dialogsSection.deletePassword.account.innerHTML = "";
+  accountsSection.container.innerHTML = "";
 
   // Set focus on searchbar
-  document.querySelector("input[type='search']").focus({ preventScroll: true });
+  accountsSection.search.focus({ preventScroll: true });
 
   // Load passwords
   const passwords = await db.getPasswords(user);
@@ -430,10 +391,8 @@ async function loadPasswords(user) {
       span.classList.add("active");
       if (!activeSpan) {
         // activate edit and delete buttons
-        const buttonBar = passwordSection.querySelector(".button-bar");
-        for (let i = 0; i < buttonBar.children.length; i++) {
-          buttonBar.children[i].removeAttribute("disabled");
-        }
+        accountsSection.editButton.removeAttribute("disabled");
+        accountsSection.deleteButton.removeAttribute("disabled");
         activeSpan = span;
       } else if (activeSpan !== span) {
         // if clicked a different span remove highlighting from the previous
@@ -447,16 +406,16 @@ async function loadPasswords(user) {
       decrypted.username = await crypt.decrypt(password.username);
       decrypted.password = await crypt.decrypt(password.password);
       // Show password
-      accountOutput.value = decrypted.name;
-      usernameOutput.value = decrypted.username;
-      passwordOutput.value = decrypted.password;
+      accountsSection.accountOutput.value = decrypted.name;
+      accountsSection.usernameOutput.value = decrypted.username;
+      accountsSection.passwordOutput.value = decrypted.password;
       // Preset all dialogs
-      editPasswordName.value = decrypted.name;
-      editPasswordUsername.value = decrypted.username;
-      editPasswordPassword.value = decrypted.password;
-      deletePasswordName.innerHTML = decrypted.name;
+      dialogsSection.changePassword.account.value = decrypted.name;
+      dialogsSection.changePassword.username.value = decrypted.username;
+      dialogsSection.changePassword.password.value = decrypted.password;
+      dialogsSection.deletePassword.account.innerHTML = decrypted.name;
     });
-    passwordContainer.appendChild(span);
+    accountsSection.container.appendChild(span);
     passwordSpans.push(span);
   }
 }
@@ -480,20 +439,20 @@ function logOut() {
  * CRUD dialogs
  */
 async function addPassword() {
-  const name = document.getElementById("add-password-name-input").value;
-  const username = document.getElementById("add-password-username-input").value;
-  const password = document.getElementById("add-password-password-input").value;
+  const name = dialogsSection.addPassword.account.value;
+  const username = dialogsSection.addPassword.account.value;
+  const password = dialogsSection.addPassword.password.value;
 
   if (name.length === 0) {
-    addPasswordOutput.innerHTML = "Please enter a name";
+    dialogsSection.addPassword.output.innerHTML = "Please enter a name";
     return;
   }
   if (username.length === 0) {
-    addPasswordOutput.innerHTML = "Please enter a username";
+    dialogsSection.addPassword.output.innerHTML = "Please enter a username";
     return;
   }
   if (password.length === 0) {
-    addPasswordOutput.innerHTML = "Please enter a password";
+    dialogsSection.addPassword.output.innerHTML = "Please enter a password";
     return;
   }
 
@@ -505,31 +464,25 @@ async function addPassword() {
       await crypt.encrypt(username),
       await crypt.encrypt(password)
     );
-    addPasswordOutput.style.color = "var(--color-success)";
-    addPasswordOutput.innerHTML = "Password added sucesfully";
+    dialogsSection.addPassword.output.style.color = "var(--color-success)";
+    dialogsSection.addPassword.output.innerHTML = "Password added sucesfully";
   } catch (error) {
     console.error(error);
-    addPasswordOutput.innerHTML = "Something went wrong";
+    dialogsSection.addPassword.output.innerHTML = "Something went wrong";
   }
 
   // Close the dialog
   setTimeout(() => {
     closeDialogs();
     setTimeout(() => {
-      addPasswordOutput.style = "";
-      addPasswordOutput.innerHTML = "";
-      document.getElementById("add-password-name-input").value = "";
-      document.getElementById("add-password-username-input").value = "";
-      document.getElementById("add-password-password-input").value = "";
+      dialogsSection.addPassword.output.style = "";
+      dialogsSection.addPassword.output.innerHTML = "";
+      dialogsSection.addPassword.account.value = "";
+      dialogsSection.addPassword.username.value = "";
+      dialogsSection.addPassword.password.value = "";
       // deactivate edit and delete buttons
-      const editButton = passwordSection.querySelector(
-        ".button-bar button[title='Edit']"
-      );
-      const deleteButton = passwordSection.querySelector(
-        ".button-bar button[title='Delete']"
-      );
-      editButton.setAttribute("disabled", "disabled");
-      deleteButton.setAttribute("disabled", "disabled");
+      accountsSection.editButton.setAttribute("disabled", "disabled");
+      accountsSection.deleteButton.setAttribute("disabled", "disabled");
       // reload passwords
       loadPasswords(activeUser);
     }, 300);
@@ -537,20 +490,20 @@ async function addPassword() {
 }
 
 async function editPassword() {
-  const name = editPasswordName.value;
-  const username = editPasswordUsername.value;
-  const password = editPasswordPassword.value;
+  const name = dialogsSection.changePassword.account.value;
+  const username = dialogsSection.changePassword.username.value;
+  const password = dialogsSection.changePassword.password.value;
 
   if (name.length === 0) {
-    editPasswordOutput.innerHTML = "Please enter a name";
+    dialogsSection.changePassword.output.innerHTML = "Please enter a name";
     return;
   }
   if (username.length === 0) {
-    editPasswordOutput.innerHTML = "Please enter a username";
+    dialogsSection.changePassword.output.innerHTML = "Please enter a username";
     return;
   }
   if (password.length === 0) {
-    editPasswordOutput.innerHTML = "Please enter a password";
+    dialogsSection.changePassword.output.innerHTML = "Please enter a password";
     return;
   }
 
@@ -562,31 +515,26 @@ async function editPassword() {
       await crypt.encrypt(username),
       await crypt.encrypt(password)
     );
-    editPasswordOutput.style.color = "var(--color-success)";
-    editPasswordOutput.innerHTML = "Password edited sucesfully";
+    dialogsSection.changePassword.output.style.color = "var(--color-success)";
+    dialogsSection.changePassword.output.innerHTML =
+      "Password edited sucesfully";
   } catch (error) {
     console.error(error);
-    editPasswordOutput.innerHTML = "Something went wrong";
+    dialogsSection.changePassword.output.innerHTML = "Something went wrong";
   }
 
   // Close the dialog
   setTimeout(() => {
     closeDialogs();
     setTimeout(() => {
-      editPasswordOutput.style = "";
-      editPasswordOutput.innerHTML = "";
-      document.getElementById("edit-password-name-input").value = "";
-      document.getElementById("edit-password-username-input").value = "";
-      document.getElementById("edit-password-password-input").value = "";
+      dialogsSection.changePassword.output.style = "";
+      dialogsSection.changePassword.output.innerHTML = "";
+      dialogsSection.changePassword.account.value = "";
+      dialogsSection.changePassword.username.value = "";
+      dialogsSection.changePassword.password.value = "";
       // deactivate edit and delete buttons
-      const editButton = passwordSection.querySelector(
-        ".button-bar button[title='Edit']"
-      );
-      const deleteButton = passwordSection.querySelector(
-        ".button-bar button[title='Delete']"
-      );
-      editButton.setAttribute("disabled", "disabled");
-      deleteButton.setAttribute("disabled", "disabled");
+      accountsSection.editButton.setAttribute("disabled", "disabled");
+      accountsSection.deleteButton.setAttribute("disabled", "disabled");
       // reload passwords
       loadPasswords(activeUser);
     }, 300);
@@ -597,29 +545,24 @@ async function deletePassword() {
   // Delete password from the database
   try {
     db.deletePassword(activeSpan.dataset.id);
-    deletePasswordOutput.style.color = "var(--color-success)";
-    deletePasswordOutput.innerHTML = "Password deleted sucesfully";
+    dialogsSection.deletePassword.output.style.color = "var(--color-success)";
+    dialogsSection.deletePassword.output.innerHTML =
+      "Password deleted sucesfully";
   } catch (error) {
     console.error(error);
-    deletePasswordOutput.innerHTML = "Something went wrong";
+    dialogsSection.deletePassword.output.innerHTML = "Something went wrong";
   }
 
   // Close the dialog
   setTimeout(() => {
     closeDialogs();
     setTimeout(() => {
-      deletePasswordOutput.style = "";
-      deletePasswordOutput.innerHTML = "";
-      deletePasswordName.innerHTML = "";
+      dialogsSection.deletePassword.output.style = "";
+      dialogsSection.deletePassword.output.innerHTML = "";
+      dialogsSection.deletePassword.account.innerHTML = "";
       // deactivate edit and delete buttons
-      const editButton = passwordSection.querySelector(
-        ".button-bar button[title='Edit']"
-      );
-      const deleteButton = passwordSection.querySelector(
-        ".button-bar button[title='Delete']"
-      );
-      editButton.setAttribute("disabled", "disabled");
-      deleteButton.setAttribute("disabled", "disabled");
+      accountsSection.editButton.setAttribute("disabled", "disabled");
+      accountsSection.deleteButton.setAttribute("disabled", "disabled");
       // reload passwords
       loadPasswords(activeUser);
     }, 300);

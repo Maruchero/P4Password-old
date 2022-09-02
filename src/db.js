@@ -69,10 +69,8 @@ function addUser(username, password, image) {
   ).run(username, password, image, 1);
 }
 
-async function updateUserPassword(id, oldPassword, password, callback = null) {
-  let passwords = db
-    .prepare("SELECT * FROM passwords WHERE user_owner = ?")
-    .all(id);
+async function updateUserPassword(id, oldPassword, password) {
+  let passwords = getPasswords(id);
 
   // decrypt passwords
   await crypt.generateKey(oldPassword);
@@ -101,10 +99,6 @@ async function updateUserPassword(id, oldPassword, password, callback = null) {
 
   // update user password
   db.prepare("UPDATE users SET password = ? WHERE id = ?").run(await crypt.sha256(password), id);
-
-  if (callback) {
-    callback();
-  }
 }
 
 function updateUserImage(id, image) {

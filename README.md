@@ -6,7 +6,7 @@
 ![Language](https://img.shields.io/badge/security-passing-a)
 ![Language](https://img.shields.io/badge/framework-Electron-blue)
 ![Language](https://img.shields.io/badge/author-Maruchero-blue)
-![Language](https://img.shields.io/badge/version-3.1.0-lightgray)
+![Language](https://img.shields.io/badge/version-3.1.1-lightgray)
 
 ## Description
 

@@ -4,17 +4,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Security-Policy" content="default-src 
-      'self'
-      'unsafe-inline'
-      https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/
-      https://fonts.googleapis.com/
-      https://fonts.gstatic.com/">
+    'self'
+    'unsafe-inline'
+    https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/
+    https://fonts.googleapis.com/
+    https://fonts.gstatic.com/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>P4Password</title>
+
   <link rel="stylesheet" href="index.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Scripts -->
+  <script src="DOM_elements.js" defer></script>
+  <script src="renderer.js" defer></script>
 </head>
 
 <body>
@@ -114,7 +120,7 @@
         <div class="content"></div>
       </div>
     </dialog>
-    
+
 
     <!-- Delete user -->
     <dialog id="delete-user-dialog">
@@ -148,9 +154,9 @@
       <label for="username-input">Username</label>
       <input type="text" id="username-input" autofocus>
       <label for="password-input">Password</label>
-      <input type="password" id="password-input" onkeyup="if (event.key == 'Enter') login()">
+      <input type="password" id="password-input" onkeyup="if (event.key == 'Enter') login_()">
       <label id="login-output"></label>
-      <button id="login-button" onclick="login()">Login</button>
+      <button id="login-button" onclick="login_()">Login</button>
     </div>
   </section>
 
@@ -195,9 +201,6 @@
       <button onclick="clipboard.copy(passwordOutput.value)"><i class="fa-regular fa-clone"></i></button>
     </div>
   </section>
-
-  <!-- Scripts -->
-  <script src="renderer.js"></script>
 </body>
 
 </html>

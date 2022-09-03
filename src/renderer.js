@@ -3,52 +3,58 @@ let activeUser = null;
 /*****************************************
  * Load last user
  */
-let lastUser = db.getUser(db.getLastUser().last_user);
-if (lastUser) {
-  // Load theme
-  let root = document.querySelector(":root");
-  let theme = db.getTheme(lastUser.theme);
-  root.style.setProperty("--background", theme.background);
-  root.style.setProperty("--color", theme.text1);
-  root.style.setProperty("--button-color", theme.text2);
-  root.style.setProperty("--color-disabled", theme.text3);
-  root.style.setProperty("--palette-1", theme.color1);
-  root.style.setProperty("--palette-2", theme.color2);
-  root.style.setProperty("--palette-3", theme.color3);
-  root.style.setProperty("--palette-4", theme.color4);
-  root.style.setProperty("--palette-5", theme.color5);
-  root.style.setProperty("--palette-6", theme.color6);
-  root.style.setProperty("--palette-7", theme.color7);
-  root.style.setProperty("--palette-8", theme.color8);
-  root.style.setProperty("--palette-9", theme.color9);
-  root.style.setProperty("--palette-10", theme.color10);
-  root.style.setProperty("--palette-11", theme.color11);
-  root.style.setProperty("--palette-12", theme.color12);
-  root.style.setProperty("--palette-13", theme.color13);
-  root.style.setProperty("--palette-14", theme.color14);
-  root.style.setProperty("--palette-15", theme.color15);
-  root.style.setProperty("--palette-16", theme.color16);
-  root.style.setProperty("--palette-17", theme.color17);
-  root.style.setProperty("--palette-18", theme.color18);
-  // Load image and username
-  // set username
-  loginSection.username.value = lastUser.username;
-  // set the focus on the password field
-  document.getElementById("password-input").focus();
-  if (lastUser.image) {
-    // set user image
-    const imgPath = lastUser.image.replace(/\\/g, "/");
-    if (fs.exists(imgPath)) {
-      loginSection.userImage.style.backgroundImage = `url("/${imgPath}")`;
-      accountsSection.userImage.style.backgroundImage = `url("/${imgPath}")`;
-      loginSection._self.style.setProperty("--bg-image", `url("/${imgPath}")`);
+loadLastUser();
+async function loadLastUser() {
+  let lastUser = await db.getUser(db.getLastUser().last_user);
+  if (lastUser) {
+    // Load theme
+    let root = document.querySelector(":root");
+    let theme = await db.getTheme(lastUser.theme);
+    root.style.setProperty("--background", theme.background);
+    root.style.setProperty("--color", theme.text1);
+    root.style.setProperty("--button-color", theme.text2);
+    root.style.setProperty("--color-disabled", theme.text3);
+    root.style.setProperty("--palette-1", theme.color1);
+    root.style.setProperty("--palette-2", theme.color2);
+    root.style.setProperty("--palette-3", theme.color3);
+    root.style.setProperty("--palette-4", theme.color4);
+    root.style.setProperty("--palette-5", theme.color5);
+    root.style.setProperty("--palette-6", theme.color6);
+    root.style.setProperty("--palette-7", theme.color7);
+    root.style.setProperty("--palette-8", theme.color8);
+    root.style.setProperty("--palette-9", theme.color9);
+    root.style.setProperty("--palette-10", theme.color10);
+    root.style.setProperty("--palette-11", theme.color11);
+    root.style.setProperty("--palette-12", theme.color12);
+    root.style.setProperty("--palette-13", theme.color13);
+    root.style.setProperty("--palette-14", theme.color14);
+    root.style.setProperty("--palette-15", theme.color15);
+    root.style.setProperty("--palette-16", theme.color16);
+    root.style.setProperty("--palette-17", theme.color17);
+    root.style.setProperty("--palette-18", theme.color18);
+    // Load image and username
+    // set username
+    loginSection.username.value = lastUser.username;
+    // set the focus on the password field
+    document.getElementById("password-input").focus();
+    if (lastUser.image) {
+      // set user image
+      const imgPath = lastUser.image.replace(/\\/g, "/");
+      if (fs.exists(imgPath)) {
+        loginSection.userImage.style.backgroundImage = `url("/${imgPath}")`;
+        accountsSection.userImage.style.backgroundImage = `url("/${imgPath}")`;
+        loginSection._self.style.setProperty(
+          "--bg-image",
+          `url("/${imgPath}")`
+        );
+      }
+      // if user changes username reset the image
+      loginSection.username.addEventListener("input", () => {
+        loginSection.userImage.style = "";
+        accountsSection.userImage.style = "";
+        loginSection._self.style.setProperty("--opacity", "0");
+      });
     }
-    // if user changes username reset the image
-    loginSection.username.addEventListener("input", () => {
-      loginSection.userImage.style = "";
-      accountsSection.userImage.style = "";
-      loginSection._self.style.setProperty("--opacity", "0");
-    });
   }
 }
 
@@ -114,15 +120,17 @@ function setActiveCategory(category) {
           <button onclick="closeDialogs(); setTimeout(()=>{openDialog('delete-user-dialog')}, 300)" style="background: rgb(255, 101, 101); border-color: rgb(224, 74, 74);">Delete user</button>
         `;
 
-      const user = db.getUser(activeUser);
-      user.image = user.image ? user.image.replace(/\\/g, "/") : null;
-      if (fs.exists(user.image))
-        document.getElementById(
-          "user-image-preview"
-        ).style.backgroundImage = `url("/${user.image}")`;
-      else document.getElementById("user-image-preview").style = "";
+      // Set user image preview
+      db.getUser(activeUser).then((user) => {
+        user.image = user.image ? user.image.replace(/\\/g, "/") : null;
+        if (fs.exists(user.image))
+          document.getElementById(
+            "user-image-preview"
+          ).style.backgroundImage = `url("/${user.image}")`;
+        else document.getElementById("user-image-preview").style = "";
 
-      dialogsSection.deleteUser.account.innerHTML = user.username;
+        dialogsSection.deleteUser.account.innerHTML = user.username;
+      });
       break;
 
     default:
@@ -137,7 +145,7 @@ async function showChangeImageDialog() {
   }
 }
 
-function setImage(path) {
+async function setImage(path) {
   db.updateUserImage(activeUser, path);
   // Update images
   imgPath = path ? path.replace(/\\/g, "/") : null;
@@ -165,7 +173,7 @@ async function changePassword() {
     "change-password-repeat-new-password"
   ).value;
 
-  const user = db.getUser(activeUser);
+  const user = await db.getUser(activeUser);
 
   if (user.password !== (await crypt.sha256(password))) {
     changePasswordOutput.innerHTML = "Wrong password";
@@ -210,14 +218,15 @@ async function changePassword() {
 
 function deleteUser() {
   const out = document.getElementById("delete-user-output");
-  try {
-    db.deleteUser(activeUser);
-    out.style.color = "var(--color-success)";
-    out.innerHTML = "User deleted succesfully";
-  } catch (e) {
-    console.error(e);
-    out.innerHTML = "Something went wrong";
-  }
+  db.deleteUser(activeUser)
+    .then(() => {
+      out.style.color = "var(--color-success)";
+      out.innerHTML = "User deleted succesfully";
+    })
+    .catch((e) => {
+      console.error(e);
+      out.innerHTML = "Something went wrong";
+    });
   setTimeout(() => {
     window.location.reload();
   }, 2000);
@@ -254,7 +263,7 @@ async function addUser() {
     dialogsSection.addUser.output.innerHTML = "Please enter a username";
     return;
   }
-  if (db.getUser(username)) {
+  if (await db.getUserByUsername(username)) {
     dialogsSection.addUser.output.innerHTML = "User already exists";
     return;
   }
@@ -268,13 +277,15 @@ async function addUser() {
   }
 
   // Add user to the database
-  try {
-    db.addUser(username, await crypt.sha256(password), image ? image : null);
-    dialogsSection.addUser.output.style.color = "var(--color-success)";
-    dialogsSection.addUser.output.innerHTML = "User added succesfully";
-  } catch (error) {
-    dialogsSection.addUser.output.innerHTML = "Something went wrong";
-  }
+  db.addUser(username, await crypt.sha256(password), image ? image : null)
+    .then(() => {
+      dialogsSection.addUser.output.style.color = "var(--color-success)";
+      dialogsSection.addUser.output.innerHTML = "User added succesfully";
+    })
+    .catch((e) => {
+      console.error(e);
+      dialogsSection.addUser.output.innerHTML = "Something went wrong";
+    });
 
   // Close the dialog
   setTimeout(() => {
@@ -286,6 +297,9 @@ async function addUser() {
       dialogsSection.addUser.password.value = "";
       dialogsSection.addUser.confirm.value = "";
       dialogsSection.addUser.image.value = "";
+      dialogsSection._self.querySelector(
+        "button.square-button"
+      ).style.background = "var(--palette-6)";
     }, 300);
   }, 1000);
 }
@@ -315,7 +329,7 @@ async function login_() {
   }
 
   // Check if user exists
-  const user = db.getUserByUsername(username);
+  const user = await db.getUserByUsername(username);
   if (!user || user.password !== (await crypt.sha256(password))) {
     loginSection.output.innerHTML = "Invalid username or password";
     return;
@@ -323,7 +337,7 @@ async function login_() {
 
   db.setLastUser(user.id);
 
-  lastUser = db.getUser(db.getLastUser().last_user);
+  lastUser = await db.getUser(await db.getLastUser().last_user);
   if (lastUser.image) {
     const imgPath = lastUser.image.replace(/\\/g, "/");
     if (fs.exists(imgPath))
@@ -457,19 +471,20 @@ async function addPassword() {
   }
 
   // Add password to the database
-  try {
-    db.addPassword(
-      activeUser,
-      await crypt.encrypt(name),
-      await crypt.encrypt(username),
-      await crypt.encrypt(password)
-    );
-    dialogsSection.addPassword.output.style.color = "var(--color-success)";
-    dialogsSection.addPassword.output.innerHTML = "Password added sucesfully";
-  } catch (error) {
-    console.error(error);
-    dialogsSection.addPassword.output.innerHTML = "Something went wrong";
-  }
+  db.addPassword(
+    activeUser,
+    await crypt.encrypt(name),
+    await crypt.encrypt(username),
+    await crypt.encrypt(password)
+  )
+    .then(() => {
+      dialogsSection.addPassword.output.style.color = "var(--color-success)";
+      dialogsSection.addPassword.output.innerHTML = "Password added sucesfully";
+    })
+    .catch((e) => {
+      console.error(e);
+      dialogsSection.addPassword.output.innerHTML = "Something went wrong";
+    });
 
   // Close the dialog
   setTimeout(() => {
@@ -508,20 +523,21 @@ async function editPassword() {
   }
 
   // Edit password in the database
-  try {
-    db.updatePassword(
-      activeSpan.dataset.id,
-      await crypt.encrypt(name),
-      await crypt.encrypt(username),
-      await crypt.encrypt(password)
-    );
-    dialogsSection.changePassword.output.style.color = "var(--color-success)";
-    dialogsSection.changePassword.output.innerHTML =
-      "Password edited sucesfully";
-  } catch (error) {
-    console.error(error);
-    dialogsSection.changePassword.output.innerHTML = "Something went wrong";
-  }
+  db.updatePassword(
+    activeSpan.dataset.id,
+    await crypt.encrypt(name),
+    await crypt.encrypt(username),
+    await crypt.encrypt(password)
+  )
+    .then(() => {
+      dialogsSection.changePassword.output.style.color = "var(--color-success)";
+      dialogsSection.changePassword.output.innerHTML =
+        "Password edited sucesfully";
+    })
+    .catch((e) => {
+      console.error(e);
+      dialogsSection.changePassword.output.innerHTML = "Something went wrong";
+    });
 
   // Close the dialog
   setTimeout(() => {
@@ -543,15 +559,16 @@ async function editPassword() {
 
 async function deletePassword() {
   // Delete password from the database
-  try {
-    db.deletePassword(activeSpan.dataset.id);
-    dialogsSection.deletePassword.output.style.color = "var(--color-success)";
-    dialogsSection.deletePassword.output.innerHTML =
-      "Password deleted sucesfully";
-  } catch (error) {
-    console.error(error);
-    dialogsSection.deletePassword.output.innerHTML = "Something went wrong";
-  }
+  db.deletePassword(activeSpan.dataset.id)
+    .then(() => {
+      dialogsSection.deletePassword.output.style.color = "var(--color-success)";
+      dialogsSection.deletePassword.output.innerHTML =
+        "Password deleted sucesfully";
+    })
+    .catch((e) => {
+      console.error(e);
+      dialogsSection.deletePassword.output.innerHTML = "Something went wrong";
+    });
 
   // Close the dialog
   setTimeout(() => {

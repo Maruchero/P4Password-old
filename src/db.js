@@ -51,26 +51,26 @@ function now() {
 }
 
 // user table
-function getUser(id) {
+async function getUser(id) {
   return db
     .prepare("SELECT * FROM users WHERE id = ? AND delete_time IS NULL")
     .get(id);
 }
 
-function getUserByUsername(username) {
+async function getUserByUsername(username) {
   return db
     .prepare("SELECT * FROM users WHERE username = ? AND delete_time IS NULL")
     .get(username);
 }
 
-function addUser(username, password, image) {
+async function addUser(username, password, image) {
   db.prepare(
     "INSERT INTO users (username, password, image, theme) VALUES (?, ?, ?, ?)"
   ).run(username, password, image, 1);
 }
 
 async function updateUserPassword(id, oldPassword, password) {
-  let passwords = getPasswords(id);
+  let passwords = await getPasswords(id);
 
   // decrypt passwords
   await crypt.generateKey(oldPassword);
@@ -101,15 +101,15 @@ async function updateUserPassword(id, oldPassword, password) {
   db.prepare("UPDATE users SET password = ? WHERE id = ?").run(await crypt.sha256(password), id);
 }
 
-function updateUserImage(id, image) {
+async function updateUserImage(id, image) {
   db.prepare("UPDATE users SET image = ? WHERE id = ?").run(image, id);
 }
 
-function updateUserTheme(id, theme) {
+async function updateUserTheme(id, theme) {
   db.prepare("UPDATE users SET theme = ? WHERE id = ?").run(theme, id);
 }
 
-function deleteUser(id) {
+async function deleteUser(id) {
   let delete_time = now();
   db.prepare("UPDATE users SET delete_time = ? WHERE id = ?").run(
     delete_time,
@@ -123,7 +123,7 @@ function deleteUser(id) {
 }
 
 // password table
-function getPasswords(user_owner_id) {
+async function getPasswords(user_owner_id) {
   return db
     .prepare(
       "SELECT * FROM passwords WHERE user_owner = ? AND delete_time IS NULL"
@@ -131,19 +131,19 @@ function getPasswords(user_owner_id) {
     .all(user_owner_id);
 }
 
-function addPassword(user_owner, name, username, password) {
+async function addPassword(user_owner, name, username, password) {
   db.prepare(
     "INSERT INTO passwords (user_owner, name, username, password) VALUES (?, ?, ?, ?)"
   ).run(user_owner, name, username, password);
 }
 
-function updatePassword(id, name, username, password) {
+async function updatePassword(id, name, username, password) {
   db.prepare(
     "UPDATE passwords SET name = ?, username = ?, password = ? WHERE id = ? AND delete_time IS NULL"
   ).run(name, username, password, id);
 }
 
-function deletePassword(id) {
+async function deletePassword(id) {
   db.prepare("UPDATE passwords SET delete_time = ? WHERE id = ?").run(
     now(),
     id
@@ -155,12 +155,12 @@ function getLastUser() {
   return db.prepare("SELECT last_user FROM app_data").get();
 }
 
-function setLastUser(username) {
+async function setLastUser(username) {
   db.prepare("UPDATE app_data SET last_user = ?").run(username);
 }
 
 // theme table
-function getTheme(id) {
+async function getTheme(id) {
   return db.prepare("SELECT * FROM themes WHERE id = ?").get(id);
 }
 

@@ -87,7 +87,7 @@ function closeDialogs() {
 /******************************************
  * Settings dialog
  */
-function setActiveCategory(category) {
+async function setActiveCategory(category) {
   for (let i = 0; i < dialogsSection.settings.groups.length; i++) {
     dialogsSection.settings.groups[i].classList.remove("active");
   }
@@ -130,6 +130,21 @@ function setActiveCategory(category) {
         else document.getElementById("user-image-preview").style = "";
 
         dialogsSection.deleteUser.account.innerHTML = user.username;
+      });
+
+      // Password minimum length
+      const passwordInput = document.getElementById(
+        "change-password-new-password"
+      );
+      const output = document.getElementById("change-password-output");
+
+      passwordInput.addEventListener("keyup", () => {
+        const password = passwordInput.value;
+        if (password.length < 10) {
+          output.innerHTML = "Password must be at least 10 characters long";
+        } else {
+          output.innerHTML = "";
+        }
       });
       break;
 
@@ -181,6 +196,10 @@ async function changePassword() {
   }
   if (newPassword.length === 0) {
     changePasswordOutput.innerHTML = "Please enter a new password";
+    return;
+  }
+  if (newPassword.length < 10) {
+    changePasswordOutput.innerHTML = "Password must be at least 10 characters long";
     return;
   }
   if (newPassword === password) {
@@ -271,6 +290,11 @@ async function addUser() {
     dialogsSection.addUser.output.innerHTML = "Please enter a password";
     return;
   }
+  if (password.length < 10) {
+    dialogsSection.addUser.output.innerHTML =
+      "Password must be at least 10 characters long";
+    return;
+  }
   if (password !== confirm) {
     dialogsSection.addUser.output.innerHTML = "Passwords do not match";
     return;
@@ -311,6 +335,16 @@ async function showChooseImageDialog(element) {
     element.style.backgroundColor = "rgb(170, 230, 170)";
   }
 }
+
+dialogsSection.addUser.password.addEventListener("keyup", () => {
+  const password = dialogsSection.addUser.password.value;
+  if (password.length < 10) {
+    dialogsSection.addUser.output.innerHTML =
+      "Password must be at least 10 characters long";
+  } else {
+    dialogsSection.addUser.output.innerHTML = "";
+  }
+});
 
 /******************************************
  * Login section

@@ -346,53 +346,6 @@ dialogsSection.addUser.password.addEventListener("keyup", () => {
   }
 });
 
-/******************************************
- * Login section
- */
-async function login_() {
-  const username = loginSection.username.value;
-  const password = loginSection.password.value;
-
-  if (username.length === 0) {
-    loginSection.output.innerHTML = "Please enter a username";
-    return;
-  }
-  if (password.length === 0) {
-    loginSection.output.innerHTML = "Please enter a password";
-    return;
-  }
-
-  // Check if user exists
-  const user = await db.getUserByUsername(username);
-  if (!user || user.password !== (await crypt.sha256(password))) {
-    loginSection.output.innerHTML = "Invalid username or password";
-    return;
-  }
-
-  db.setLastUser(user.id);
-
-  lastUser = await db.getUser(await db.getLastUser().last_user);
-  if (lastUser.image) {
-    const imgPath = lastUser.image.replace(/\\/g, "/");
-    if (fs.exists(imgPath))
-      accountsSection.userImage.style.backgroundImage = `url("/${imgPath}")`;
-  }
-
-  // Load passwords
-  crypt.generateKey(password).then(() => {
-    // Login user
-    activeUser = user.id;
-    loginSection.output.style.color = "var(--color-success)";
-    loginSection.output.innerHTML = "Login successful";
-
-    accountsSection._self.style =
-      "animation: slide-left .5s ease-in-out forwards; display: block";
-    loginSection._self.style = "filter: brightness(.8)";
-
-    loadPasswords(user.id);
-  });
-}
-
 /****************************************
  * Password section
  */

@@ -107,7 +107,7 @@
       <h1>Settings</h1>
       <div class="interactivity">
         <div class="categories">
-          <span class="category active" data-category="user-settings" onclick="setActiveCategory(this)"
+          <span class="category" data-category="user-settings" onclick="setActiveCategory(this)"
             id="default-category">
             <i class="fa-solid fa-key"></i>
           </span>
@@ -179,7 +179,7 @@
         <div class="dropdown-content" onclick="event.stopPropagation()">
           <div class="container">
             <span
-              onclick="openDialog('settings-dialog', setActiveCategory(document.querySelector('#default-category')))"><i
+              onclick="openDialog('settings-dialog', () => {setActiveCategory(document.querySelector('#default-category'))})"><i
                 class="fa-solid fa-gear"></i>Settings</span>
             <span onclick="logOut()"><i class="fa-solid fa-right-from-bracket"></i>Logout</span>
           </div>

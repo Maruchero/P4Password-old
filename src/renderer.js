@@ -199,7 +199,8 @@ async function changePassword() {
     return;
   }
   if (newPassword.length < 10) {
-    changePasswordOutput.innerHTML = "Password must be at least 10 characters long";
+    changePasswordOutput.innerHTML =
+      "Password must be at least 10 characters long";
     return;
   }
   if (newPassword === password) {
@@ -362,7 +363,14 @@ function generatePassword() {
 }
 
 const passwordSpans = [];
+let displayedSpans = [];
+const updateDisplayedSpans = () => {
+  displayedSpans = Array.from(accountsSection.container.children).filter(
+    (span) => span.style.display !== "none"
+  );
+};
 let activeSpan = null;
+let activeSpanIndex = null;
 async function loadPasswords(user) {
   // Clear previous status
   activeSpan = null;
@@ -374,6 +382,9 @@ async function loadPasswords(user) {
   dialogsSection.changePassword.password.value = "";
   dialogsSection.deletePassword.account.innerHTML = "";
   accountsSection.container.innerHTML = "";
+
+  // Load event listener
+  loadEventListener();
 
   // Set focus on searchbar
   accountsSection.search.focus({ preventScroll: true });
@@ -399,8 +410,10 @@ async function loadPasswords(user) {
         // if clicked a different span remove highlighting from the previous
         activeSpan.classList.remove("active");
       }
+      // Set active span
       activeSpan = span;
       activeSpan.dataset.id = password.id;
+      activeSpanIndex = displayedSpans.findIndex((span_) => span_ === span);
       // Decrypt password
       const decrypted = {};
       decrypted.name = await crypt.decrypt(password.name);
@@ -419,6 +432,7 @@ async function loadPasswords(user) {
     accountsSection.container.appendChild(span);
     passwordSpans.push(span);
   }
+  updateDisplayedSpans();
 }
 
 function search(keyword) {
@@ -430,10 +444,31 @@ function search(keyword) {
       span.style.display = "none";
     }
   }
+  updateDisplayedSpans();
 }
 
 function logOut() {
   location.reload();
+}
+
+function loadEventListener() {
+  const activateSpan = (inc) => {
+    if (activeSpanIndex !== null) {
+      activeSpanIndex =
+        (activeSpanIndex + inc + displayedSpans.length) % displayedSpans.length;
+    } else {
+      activeSpanIndex = 0;
+    }
+    displayedSpans[activeSpanIndex].click();
+  };
+
+  document.body.addEventListener("keyup", (event) => {
+    if (event.key === "ArrowUp") {
+      activateSpan(-1);
+    } else if (event.key === "ArrowDown") {
+      activateSpan(1);
+    }
+  });
 }
 
 /******************************************

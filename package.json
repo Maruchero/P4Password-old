@@ -1,7 +1,7 @@
 {
   "name": "p4password",
   "productName": "P4Password",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Cool offline password saver",
   "main": "./src/index.js",
   "scripts": {

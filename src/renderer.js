@@ -1,4 +1,5 @@
 let activeUser = null;
+const minLength = 8;
 
 /*****************************************
  * Load last user
@@ -137,7 +138,6 @@ async function setActiveCategory(category) {
         "change-password-new-password"
       );
       const output = document.getElementById("change-password-output");
-      const minLength = 8;
 
       passwordInput.addEventListener("keyup", () => {
         const password = passwordInput.value;
@@ -199,9 +199,9 @@ async function changePassword() {
     changePasswordOutput.innerHTML = "Please enter a new password";
     return;
   }
-  if (newPassword.length < 10) {
+  if (newPassword.length < minLength) {
     changePasswordOutput.innerHTML =
-      "Password must be at least 10 characters long";
+      "Password must be at least " + minLength + " characters long";
     return;
   }
   if (newPassword === password) {
@@ -292,9 +292,9 @@ async function addUser() {
     dialogsSection.addUser.output.innerHTML = "Please enter a password";
     return;
   }
-  if (password.length < 10) {
+  if (password.length < minLength) {
     dialogsSection.addUser.output.innerHTML =
-      "Password must be at least 10 characters long";
+      "Password must be at least " + minLength + " characters long";
     return;
   }
   if (password !== confirm) {
@@ -340,9 +340,9 @@ async function showChooseImageDialog(element) {
 
 dialogsSection.addUser.password.addEventListener("keyup", () => {
   const password = dialogsSection.addUser.password.value;
-  if (password.length < 10) {
+  if (password.length < minLength) {
     dialogsSection.addUser.output.innerHTML =
-      "Password must be at least 10 characters long";
+      "Password must be at least " + minLength + " characters long";
   } else {
     dialogsSection.addUser.output.innerHTML = "";
   }
@@ -478,7 +478,7 @@ function loadEventListener() {
  */
 async function addPassword() {
   const name = dialogsSection.addPassword.account.value;
-  const username = dialogsSection.addPassword.account.value;
+  const username = dialogsSection.addPassword.username.value;
   const password = dialogsSection.addPassword.password.value;
 
   if (name.length === 0) {

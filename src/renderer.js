@@ -137,11 +137,12 @@ async function setActiveCategory(category) {
         "change-password-new-password"
       );
       const output = document.getElementById("change-password-output");
+      const minLength = 8;
 
       passwordInput.addEventListener("keyup", () => {
         const password = passwordInput.value;
-        if (password.length < 10) {
-          output.innerHTML = "Password must be at least 10 characters long";
+        if (password.length < minLength) {
+          output.innerHTML = "Password must be at least " + minLength + " characters long";
         } else {
           output.innerHTML = "";
         }
@@ -374,6 +375,7 @@ let activeSpanIndex = null;
 async function loadPasswords(user) {
   // Clear previous status
   activeSpan = null;
+  accountsSection.search.value = "";
   accountsSection.accountOutput.value = "";
   accountsSection.usernameOutput.value = "";
   accountsSection.passwordOutput.value = "";

@@ -455,7 +455,7 @@ function logOut() {
 
 function loadEventListener() {
   const activateSpan = (inc) => {
-    if (activeSpanIndex !== null) {
+    if (!(activeSpanIndex === null || activeSpanIndex === undefined)) {
       activeSpanIndex =
         (activeSpanIndex + inc + displayedSpans.length) % displayedSpans.length;
     } else {
